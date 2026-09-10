@@ -1,5 +1,5 @@
 import React from 'react';
-import { Calendar, Users, AlertCircle, RefreshCw } from 'lucide-react';
+import { Calendar, Users, AlertCircle, RotateCcw } from 'lucide-react';
 import { DateValidationResult } from '../types/booking';
 
 interface DateGuestFilterProps {
@@ -23,10 +23,8 @@ export const DateGuestFilter: React.FC<DateGuestFilterProps> = ({
   validation,
   minDate,
 }) => {
-
   const handleQuickPreset = (nightsCount: number) => {
     const startDate = checkIn || minDate;
-    
     const start = new Date(startDate);
     const end = new Date(start);
     end.setDate(end.getDate() + nightsCount);
@@ -39,38 +37,30 @@ export const DateGuestFilter: React.FC<DateGuestFilterProps> = ({
     onCheckOutChange(format(end));
   };
 
-  const handleResetDates = () => {
+  const handleReset = () => {
     onCheckInChange('');
     onCheckOutChange('');
   };
 
   return (
-    <section className="filter-card">
-      <div className="filter-card-header">
-        <div className="filter-title-group">
-          <Calendar className="title-icon" size={20} />
-          <h2>Select Dates & Guests</h2>
-        </div>
-        {(checkIn || checkOut) && (
-          <button className="reset-btn" onClick={handleResetDates} title="Reset dates">
-            <RefreshCw size={14} />
-            <span>Reset</span>
-          </button>
-        )}
+    <section className="search-bar-card">
+      <div className="search-bar-title">
+        <Calendar size={18} />
+        <span>Select Dates & Guest Capacity</span>
       </div>
 
-      <div className="filter-grid">
-        {/* Check-in Date */}
-        <div className="filter-field">
+      <div className="search-fields-grid">
+        {/* Check-in Field */}
+        <div className="field-group">
           <label htmlFor="check-in-input" className="field-label">
-            <span>Check-in Date</span>
+            Check-in
           </label>
-          <div className="input-wrapper">
-            <Calendar size={18} className="input-icon" />
+          <div className="input-container">
+            <Calendar size={18} className="field-icon" />
             <input
               id="check-in-input"
               type="date"
-              className={`date-input ${validation.errorType === 'PAST_DATE' ? 'input-error' : ''}`}
+              className={`form-input ${validation.errorType === 'PAST_DATE' ? 'has-error' : ''}`}
               value={checkIn}
               min={minDate}
               onChange={(e) => onCheckInChange(e.target.value)}
@@ -78,17 +68,17 @@ export const DateGuestFilter: React.FC<DateGuestFilterProps> = ({
           </div>
         </div>
 
-        {/* Check-out Date */}
-        <div className="filter-field">
+        {/* Check-out Field */}
+        <div className="field-group">
           <label htmlFor="check-out-input" className="field-label">
-            <span>Check-out Date</span>
+            Check-out
           </label>
-          <div className="input-wrapper">
-            <Calendar size={18} className="input-icon" />
+          <div className="input-container">
+            <Calendar size={18} className="field-icon" />
             <input
               id="check-out-input"
               type="date"
-              className={`date-input ${validation.errorType === 'INVALID_RANGE' ? 'input-error' : ''}`}
+              className={`form-input ${validation.errorType === 'INVALID_RANGE' ? 'has-error' : ''}`}
               value={checkOut}
               min={checkIn || minDate}
               onChange={(e) => onCheckOutChange(e.target.value)}
@@ -96,16 +86,16 @@ export const DateGuestFilter: React.FC<DateGuestFilterProps> = ({
           </div>
         </div>
 
-        {/* Guest Filter (Bonus) */}
-        <div className="filter-field">
+        {/* Guests Field */}
+        <div className="field-group">
           <label htmlFor="guest-select" className="field-label">
-            <span>Guest Count (Filter)</span>
+            Guests
           </label>
-          <div className="input-wrapper">
-            <Users size={18} className="input-icon" />
+          <div className="input-container">
+            <Users size={18} className="field-icon" />
             <select
               id="guest-select"
-              className="select-input"
+              className="form-input"
               value={guests}
               onChange={(e) => onGuestsChange(Number(e.target.value))}
             >
@@ -118,29 +108,34 @@ export const DateGuestFilter: React.FC<DateGuestFilterProps> = ({
         </div>
       </div>
 
-      {/* Preset Stay Buttons */}
-      <div className="quick-presets">
-        <span className="preset-label">Quick Stay Duration:</span>
-        <div className="preset-chips">
-          <button type="button" className="chip-btn" onClick={() => handleQuickPreset(1)}>
-            +1 Night
+      {/* Quick Stay Duration Presets */}
+      <div className="quick-options-row">
+        <span className="quick-label">Popular Stay Durations:</span>
+        <div className="duration-pills">
+          <button type="button" className="duration-pill-btn" onClick={() => handleQuickPreset(1)}>
+            1 Night
           </button>
-          <button type="button" className="chip-btn" onClick={() => handleQuickPreset(2)}>
-            +2 Nights
+          <button type="button" className="duration-pill-btn" onClick={() => handleQuickPreset(2)}>
+            2 Nights
           </button>
-          <button type="button" className="chip-btn" onClick={() => handleQuickPreset(3)}>
-            +3 Nights
+          <button type="button" className="duration-pill-btn" onClick={() => handleQuickPreset(3)}>
+            3 Nights
           </button>
-          <button type="button" className="chip-btn" onClick={() => handleQuickPreset(5)}>
-            +5 Nights
+          <button type="button" className="duration-pill-btn" onClick={() => handleQuickPreset(5)}>
+            5 Nights
           </button>
+          {(checkIn || checkOut) && (
+            <button type="button" className="duration-pill-btn" onClick={handleReset} style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+              <RotateCcw size={12} /> Clear Dates
+            </button>
+          )}
         </div>
       </div>
 
-      {/* Inline Validation Alert */}
+      {/* Validation Message */}
       {!validation.isValid && validation.message && (
-        <div className="validation-alert error-banner" role="alert">
-          <AlertCircle size={18} className="alert-icon" />
+        <div className="alert-box alert-danger" role="alert">
+          <AlertCircle size={16} />
           <span>{validation.message}</span>
         </div>
       )}

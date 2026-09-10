@@ -1,15 +1,7 @@
 import React, { useState } from 'react';
 import { Room, DateValidationResult, BookingCalculation } from '../types/booking';
 import { formatCurrency } from '../utils/bookingLogic';
-import {
-  Receipt,
-  Moon,
-  Info,
-  CheckCircle2,
-  AlertTriangle,
-  ChevronRight,
-  Sparkles,
-} from 'lucide-react';
+import { FileText, CheckCircle2, AlertTriangle, ArrowRight } from 'lucide-react';
 
 interface BookingSummaryProps {
   selectedRoom: Room | null;
@@ -30,20 +22,19 @@ export const BookingSummary: React.FC<BookingSummaryProps> = ({
   calculation,
   isRoomAvailable,
 }) => {
-  const [isBookedSuccess, setIsBookedSuccess] = useState(false);
+  const [isBooked, setIsBooked] = useState(false);
 
-  const formatDateLabel = (dateStr: string) => {
-    if (!dateStr) return 'Not selected';
+  const formatDate = (dateStr: string) => {
+    if (!dateStr) return 'Select date';
     const date = new Date(dateStr + 'T00:00:00');
-    return date.toLocaleDateString('en-US', {
-      weekday: 'short',
-      month: 'short',
+    return date.toLocaleDateString('en-IN', {
       day: 'numeric',
+      month: 'short',
       year: 'numeric',
     });
   };
 
-  const isFormComplete =
+  const isValidBooking =
     selectedRoom &&
     checkIn &&
     checkOut &&
@@ -52,144 +43,115 @@ export const BookingSummary: React.FC<BookingSummaryProps> = ({
     isRoomAvailable &&
     guests <= selectedRoom.maxGuests;
 
-  const handleConfirmClick = () => {
-    if (isFormComplete) {
-      setIsBookedSuccess(true);
-    }
-  };
-
   return (
-    <aside className="summary-sticky-card">
-      <div className="summary-card-header">
-        <Receipt className="summary-icon" size={22} />
-        <h2>Reservation Summary</h2>
+    <aside className="folio-card">
+      <div className="folio-title">
+        <FileText size={18} />
+        <span>Reservation Folio</span>
       </div>
 
-      {isBookedSuccess ? (
-        <div className="booking-success-box">
-          <div className="success-icon-badge">
-            <CheckCircle2 size={36} />
-          </div>
-          <h3>Reservation Confirmed!</h3>
-          <p className="success-subtitle">
-            Your stay for <strong>{selectedRoom?.code} ({selectedRoom?.type})</strong> has been successfully held.
+      {isBooked ? (
+        <div className="confirmation-card">
+          <CheckCircle2 size={38} className="confirmation-icon" />
+          <h3 style={{ fontFamily: 'var(--font-display)', marginBottom: '4px' }}>Stay Reserved!</h3>
+          <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '16px' }}>
+            Room {selectedRoom?.code} holds confirmed for {calculation.nights} night(s).
           </p>
-          <div className="receipt-details font-mono">
-            <div className="receipt-row">
-              <span>Nights:</span>
-              <strong>{calculation.nights} night(s)</strong>
-            </div>
-            <div className="receipt-row">
+          <div className="calculation-table">
+            <div className="calc-row">
               <span>Total Paid:</span>
               <strong>{formatCurrency(calculation.totalPrice)}</strong>
             </div>
           </div>
-          <button
-            className="btn-secondary full-width"
-            onClick={() => setIsBookedSuccess(false)}
-          >
-            Modify Selection
+          <button className="btn-secondary" onClick={() => setIsBooked(false)}>
+            Change Dates or Room
           </button>
         </div>
       ) : (
-        <div className="summary-content">
-          {/* Selected Room Details */}
-          <div className="summary-section">
-            <div className="section-label">Selected Room</div>
+        <div>
+          {/* Selected Room */}
+          <div className="folio-group">
+            <div className="folio-label">Room Selected</div>
             {selectedRoom ? (
-              <div className="selected-room-info">
-                <div className="room-code-tag">{selectedRoom.code}</div>
-                <div>
-                  <h4 className="room-name">{selectedRoom.type}</h4>
-                  <div className="room-rate-text">
-                    {formatCurrency(selectedRoom.pricePerNight)} / night
-                  </div>
+              <div className="folio-value-box">
+                <div><strong>{selectedRoom.code}</strong> — {selectedRoom.type}</div>
+                <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
+                  {formatCurrency(selectedRoom.pricePerNight)} / night
                 </div>
               </div>
             ) : (
-              <div className="placeholder-box">
-                <Info size={16} />
-                <span>Please select a room from the list</span>
+              <div className="folio-value-box" style={{ color: 'var(--text-muted)' }}>
+                Please choose a room
               </div>
             )}
           </div>
 
-          {/* Dates & Nights Breakdown */}
-          <div className="summary-section">
-            <div className="section-label">Stay Interval</div>
-            <div className="dates-preview-grid">
-              <div className="date-block">
-                <span className="date-caption">Check-in</span>
-                <span className="date-val">{formatDateLabel(checkIn)}</span>
+          {/* Stay Dates */}
+          <div className="folio-group">
+            <div className="folio-label">Stay Interval</div>
+            <div className="dates-range-display">
+              <div className="date-col">
+                <span className="date-lbl">Check-in</span>
+                <span className="date-txt">{formatDate(checkIn)}</span>
               </div>
-              <ChevronRight size={16} className="date-sep-icon" />
-              <div className="date-block">
-                <span className="date-caption">Check-out</span>
-                <span className="date-val">{formatDateLabel(checkOut)}</span>
+              <ArrowRight size={14} style={{ color: 'var(--text-muted)' }} />
+              <div className="date-col">
+                <span className="date-lbl">Check-out</span>
+                <span className="date-txt">{formatDate(checkOut)}</span>
               </div>
             </div>
-
-            {calculation.nights > 0 && validation.isValid && (
-              <div className="nights-badge">
-                <Moon size={14} />
-                <span>Duration: <strong>{calculation.nights} {calculation.nights === 1 ? 'Night' : 'Nights'}</strong></span>
-              </div>
-            )}
           </div>
 
-          {/* Validation Warnings (If Any) */}
+          {/* Validation Warnings */}
           {!validation.isValid && validation.message && (
-            <div className="summary-alert error">
-              <AlertTriangle size={16} />
+            <div className="alert-box alert-danger">
+              <AlertTriangle size={14} />
               <span>{validation.message}</span>
             </div>
           )}
 
           {selectedRoom && !isRoomAvailable && (
-            <div className="summary-alert error">
-              <AlertTriangle size={16} />
-              <span>Room {selectedRoom.code} is unavailable for these dates.</span>
+            <div className="alert-box alert-danger">
+              <AlertTriangle size={14} />
+              <span>Room {selectedRoom.code} is sold out for these dates.</span>
             </div>
           )}
 
           {selectedRoom && guests > selectedRoom.maxGuests && (
-            <div className="summary-alert error">
-              <AlertTriangle size={16} />
-              <span>{guests} guests exceed room capacity ({selectedRoom.maxGuests} max).</span>
+            <div className="alert-box alert-danger">
+              <AlertTriangle size={14} />
+              <span>Exceeds room capacity ({selectedRoom.maxGuests} max guests).</span>
             </div>
           )}
 
-          {/* Pricing Math Breakdown */}
-          <div className="price-breakdown-card">
-            <div className="breakdown-title">Pricing Breakdown</div>
-            {selectedRoom && calculation.nights > 0 && validation.isValid ? (
-              <div className="math-rows">
-                <div className="math-row">
-                  <span>Room Rate ({calculation.nights} {calculation.nights === 1 ? 'night' : 'nights'})</span>
-                  <span>{formatCurrency(selectedRoom.pricePerNight)} × {calculation.nights}</span>
-                </div>
-                <div className="math-row divider"></div>
-                <div className="math-row total-row">
-                  <span className="total-label">Total Price</span>
-                  <span className="total-amount">{formatCurrency(calculation.totalPrice)}</span>
-                </div>
-              </div>
-            ) : (
-              <div className="calculation-placeholder">
-                <span>Select valid dates and a room to calculate total price</span>
+          {/* Cost Math Calculation */}
+          <div className="calculation-table">
+            <div className="calc-row">
+              <span>Duration</span>
+              <span>{calculation.nights} {calculation.nights === 1 ? 'Night' : 'Nights'}</span>
+            </div>
+            {selectedRoom && calculation.nights > 0 && (
+              <div className="calc-row">
+                <span>Room Rate</span>
+                <span>{formatCurrency(selectedRoom.pricePerNight)} × {calculation.nights}</span>
               </div>
             )}
+            <div className="calc-divider"></div>
+            <div className="calc-row total">
+              <span>Total Price</span>
+              <span className="total-price-highlight">
+                {formatCurrency(calculation.totalPrice)}
+              </span>
+            </div>
           </div>
 
-          {/* Action Button */}
           <button
             type="button"
-            className="btn-primary full-width"
-            disabled={!isFormComplete}
-            onClick={handleConfirmClick}
+            className="btn-checkout"
+            disabled={!isValidBooking}
+            onClick={() => setIsBooked(true)}
           >
-            <Sparkles size={16} />
-            <span>Confirm & Reserve Room</span>
+            Reserve Room
           </button>
         </div>
       )}

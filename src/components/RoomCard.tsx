@@ -1,7 +1,7 @@
 import React from 'react';
 import { Room } from '../types/booking';
 import { formatCurrency } from '../utils/bookingLogic';
-import { Users, Check, AlertTriangle, Lock } from 'lucide-react';
+import { Users, AlertTriangle } from 'lucide-react';
 
 interface RoomCardProps {
   room: Room;
@@ -23,97 +23,73 @@ export const RoomCard: React.FC<RoomCardProps> = ({
 
   return (
     <div
-      className={`room-card ${isSelected ? 'selected' : ''} ${!isSelectable ? 'disabled' : ''}`}
+      className={`room-card ${isSelected ? 'is-selected' : ''} ${!isSelectable ? 'is-disabled' : ''}`}
       onClick={() => isSelectable && onSelect(room.code)}
-      id={`room-card-${room.code}`}
     >
-      {/* Room Image Container */}
-      <div className="room-image-wrapper">
-        <img src={room.image} alt={room.type} className="room-image" loading="lazy" />
-        <div className="room-code-badge">{room.code}</div>
-        
-        {isSelected && (
-          <div className="selected-badge">
-            <Check size={16} />
-            <span>Selected</span>
-          </div>
-        )}
-
-        {!isAvailable && (
-          <div className="unavailable-overlay">
-            <Lock size={16} />
-            <span>Booked for selected dates</span>
-          </div>
-        )}
+      {/* Room Photo */}
+      <div className="room-media">
+        <img src={room.image} alt={room.type} className="room-photo" loading="lazy" />
+        <span className="room-code-tag">{room.code}</span>
       </div>
 
-      {/* Room Content Details */}
-      <div className="room-details">
-        <div className="room-header-line">
-          <div>
-            <span className="room-type-category">{room.type}</span>
-            <h3 className="room-title">{room.code} — {room.type}</h3>
+      {/* Room Content */}
+      <div className="room-content">
+        <div>
+          <div className="room-title-row">
+            <h3 className="room-type-title">{room.type}</h3>
+            <div className="room-price-box">
+              <span className="price-amount">{formatCurrency(room.pricePerNight)}</span>
+              <div className="price-unit">per night</div>
+            </div>
           </div>
-          <div className="room-price-tag">
-            <span className="price-val">{formatCurrency(room.pricePerNight)}</span>
-            <span className="price-unit">/ night</span>
+
+          <p className="room-desc">{room.description}</p>
+
+          <div className="room-specs-list">
+            <div className="spec-item">
+              <Users size={14} />
+              <span>Up to {room.maxGuests} Guests</span>
+            </div>
+          </div>
+
+          <div className="features-tags">
+            {room.amenities.map((amenity, idx) => (
+              <span key={idx} className="feature-tag">
+                {amenity}
+              </span>
+            ))}
           </div>
         </div>
 
-        <p className="room-description">{room.description}</p>
-
-        {/* Room Specs & Capacity */}
-        <div className="room-specs">
-          <div className={`spec-badge ${exceedsGuestCapacity ? 'spec-warning' : ''}`}>
-            <Users size={14} />
-            <span>Max {room.maxGuests} Guests</span>
-          </div>
-          {exceedsGuestCapacity && (
-            <span className="capacity-warning-text">
-              Exceeds guest limit ({filterGuests} requested)
-            </span>
-          )}
-        </div>
-
-        {/* Amenities Pills */}
-        <div className="amenities-list">
-          {room.amenities.map((amenity, idx) => (
-            <span key={idx} className="amenity-chip">
-              {amenity}
-            </span>
-          ))}
-        </div>
-
-        {/* Card Action Footer */}
-        <div className="room-action-footer">
+        {/* Footer Actions & Status */}
+        <div className="room-card-footer">
           {!isAvailable ? (
-            <div className="status-notice status-booked">
+            <span className="status-badge sold-out">
               <AlertTriangle size={14} />
-              <span>Unavailable for dates</span>
-            </div>
+              Sold Out for Dates
+            </span>
           ) : exceedsGuestCapacity ? (
-            <div className="status-notice status-capacity">
+            <span className="status-badge over-capacity">
               <AlertTriangle size={14} />
-              <span>Capacity too small</span>
-            </div>
+              Exceeds Capacity ({filterGuests} Guests)
+            </span>
           ) : (
-            <button
-              type="button"
-              className={`select-btn ${isSelected ? 'btn-active' : ''}`}
-              onClick={(e) => {
-                e.stopPropagation();
-                onSelect(room.code);
-              }}
-            >
-              {isSelected ? (
-                <>
-                  <Check size={16} /> Selected
-                </>
-              ) : (
-                'Select Room'
-              )}
-            </button>
+            <span style={{ fontSize: '0.8rem', color: '#059669', fontWeight: '600' }}>
+              ✓ Instant Confirmation
+            </span>
           )}
+
+          <button
+            type="button"
+            className={`btn-select ${isSelected ? 'selected' : ''}`}
+            disabled={!isSelectable}
+            onClick={(e) => {
+              e.stopPropagation();
+              if (isSelectable) onSelect(room.code);
+            }}
+          >
+            {isSelected ? '✓ Selected' : 'Select Room'}
+          </button>
         </div>
       </div>
     </div>
