@@ -1,53 +1,55 @@
 import React from 'react';
-import { Hotel, Phone, Globe, Shield } from 'lucide-react';
+import { Hotel, Phone, ShieldCheck } from 'lucide-react';
 
 export const Header: React.FC = () => {
   return (
-    <>
+    <header>
       {/* Top Utility Bar */}
-      <div className="top-utility-bar">
-        <div className="utility-container">
-          <div className="utility-left">
-            <div className="utility-item">
-              <Phone size={13} />
-              <span>+91 (080) 4567-8900</span>
+      <div className="top-bar">
+        <div className="top-bar-inner">
+          <div className="top-bar-left">
+            <div className="top-info-item">
+              <span className="gold-star-badge">★ ★ ★ ★ ★</span>
+              <span>FIVE-STAR LUXURY RESORT</span>
             </div>
-            <div className="utility-item">
-              <Shield size={13} />
-              <span>Official Best Rate Guarantee</span>
+            <div className="top-info-item">
+              <Phone size={13} />
+              <span>Reservations: +91 1800-RAINTECH</span>
             </div>
           </div>
-          <div className="utility-right">
-            <div className="utility-item">
-              <Globe size={13} />
+          <div className="top-bar-right">
+            <div className="top-info-item">
+              <ShieldCheck size={13} />
+              <span>Best Rate Guarantee</span>
+            </div>
+            <div className="top-info-item">
               <span>INR (₹)</span>
             </div>
-            <span>Need Help?</span>
           </div>
         </div>
       </div>
 
-      {/* Main Navigation Header */}
-      <header className="site-header">
-        <div className="header-inner">
-          <a href="#" className="brand-logo">
-            <div className="brand-icon-box">
-              <Hotel size={22} />
+      {/* Main Navigation Bar */}
+      <div className="header-nav-bar">
+        <div className="header-nav-inner">
+          <a href="#" className="brand-container">
+            <div className="brand-logo-crest">
+              <Hotel size={24} />
             </div>
             <div>
-              <div className="brand-name">Raintech Hotels</div>
-              <div className="brand-tagline">Luxury Stays & Accommodations</div>
+              <div className="brand-title-text">Raintech Stays</div>
+              <div className="brand-subtitle-text">Hotels & Resorts</div>
             </div>
           </a>
 
-          <nav className="main-nav">
-            <a href="#" className="nav-link active">Rooms & Suites</a>
-            <a href="#" className="nav-link">Amenities</a>
-            <a href="#" className="nav-link">Offers</a>
-            <a href="#" className="nav-link">Location</a>
+          <nav className="nav-links-group">
+            <a href="#" className="nav-item-link active">Accommodations</a>
+            <a href="#" className="nav-item-link">Dining & Spa</a>
+            <a href="#" className="nav-item-link">Special Offers</a>
+            <a href="#" className="nav-item-link">Contact</a>
           </nav>
         </div>
-      </header>
-    </>
+      </div>
+    </header>
   );
 };

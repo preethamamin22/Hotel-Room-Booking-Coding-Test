@@ -46,7 +46,7 @@ export function App() {
     <div>
       <Header />
 
-      <div className="page-container">
+      <main className="main-page-wrapper">
         <DateGuestFilter
           checkIn={checkIn}
           checkOut={checkOut}
@@ -58,16 +58,16 @@ export function App() {
           minDate={minDateStr}
         />
 
-        <main className="content-layout">
+        <div className="content-grid-layout">
           <section>
-            <div className="section-header-bar">
-              <h2 className="section-title">Select Accommodation</h2>
-              <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
-                {SAMPLE_ROOMS.length} Available Room Types
+            <div className="section-head">
+              <h2>Available Accommodations</h2>
+              <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)', fontWeight: '600' }}>
+                Showing {SAMPLE_ROOMS.length} Luxury Room Types
               </span>
             </div>
 
-            <div className="rooms-list">
+            <div className="rooms-stack">
               {SAMPLE_ROOMS.map((room) => {
                 const available = isRoomAvailable(
                   room.code,
@@ -100,8 +100,8 @@ export function App() {
               isRoomAvailable={isSelectedRoomAvailable}
             />
           </section>
-        </main>
-      </div>
+        </div>
+      </main>
     </div>
   );
 }

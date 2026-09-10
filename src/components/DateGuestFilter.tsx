@@ -1,5 +1,5 @@
 import React from 'react';
-import { Calendar, Users, AlertCircle, RotateCcw } from 'lucide-react';
+import { Calendar, Users, AlertCircle, RotateCcw, Sparkles } from 'lucide-react';
 import { DateValidationResult } from '../types/booking';
 
 interface DateGuestFilterProps {
@@ -43,24 +43,26 @@ export const DateGuestFilter: React.FC<DateGuestFilterProps> = ({
   };
 
   return (
-    <section className="search-bar-card">
-      <div className="search-bar-title">
-        <Calendar size={18} />
-        <span>Select Dates & Guest Capacity</span>
+    <section className="search-filter-card">
+      <div className="search-card-header">
+        <div className="search-title-box">
+          <Sparkles size={20} className="search-title-icon" />
+          <h2>Select Dates & Guest Capacity</h2>
+        </div>
       </div>
 
-      <div className="search-fields-grid">
-        {/* Check-in Field */}
-        <div className="field-group">
-          <label htmlFor="check-in-input" className="field-label">
-            Check-in
+      <div className="search-grid">
+        {/* Check-in Date */}
+        <div>
+          <label htmlFor="check-in-input" className="field-label-text">
+            Check-in Date
           </label>
-          <div className="input-container">
-            <Calendar size={18} className="field-icon" />
+          <div className="field-input-box">
+            <Calendar size={18} className="field-icon-inside" />
             <input
               id="check-in-input"
               type="date"
-              className={`form-input ${validation.errorType === 'PAST_DATE' ? 'has-error' : ''}`}
+              className={`custom-input-control ${validation.errorType === 'PAST_DATE' ? 'is-invalid' : ''}`}
               value={checkIn}
               min={minDate}
               onChange={(e) => onCheckInChange(e.target.value)}
@@ -68,17 +70,17 @@ export const DateGuestFilter: React.FC<DateGuestFilterProps> = ({
           </div>
         </div>
 
-        {/* Check-out Field */}
-        <div className="field-group">
-          <label htmlFor="check-out-input" className="field-label">
-            Check-out
+        {/* Check-out Date */}
+        <div>
+          <label htmlFor="check-out-input" className="field-label-text">
+            Check-out Date
           </label>
-          <div className="input-container">
-            <Calendar size={18} className="field-icon" />
+          <div className="field-input-box">
+            <Calendar size={18} className="field-icon-inside" />
             <input
               id="check-out-input"
               type="date"
-              className={`form-input ${validation.errorType === 'INVALID_RANGE' ? 'has-error' : ''}`}
+              className={`custom-input-control ${validation.errorType === 'INVALID_RANGE' ? 'is-invalid' : ''}`}
               value={checkOut}
               min={checkIn || minDate}
               onChange={(e) => onCheckOutChange(e.target.value)}
@@ -86,16 +88,16 @@ export const DateGuestFilter: React.FC<DateGuestFilterProps> = ({
           </div>
         </div>
 
-        {/* Guests Field */}
-        <div className="field-group">
-          <label htmlFor="guest-select" className="field-label">
-            Guests
+        {/* Guests Dropdown */}
+        <div>
+          <label htmlFor="guest-select" className="field-label-text">
+            Guests Filter
           </label>
-          <div className="input-container">
-            <Users size={18} className="field-icon" />
+          <div className="field-input-box">
+            <Users size={18} className="field-icon-inside" />
             <select
               id="guest-select"
-              className="form-input"
+              className="custom-input-control"
               value={guests}
               onChange={(e) => onGuestsChange(Number(e.target.value))}
             >
@@ -108,34 +110,34 @@ export const DateGuestFilter: React.FC<DateGuestFilterProps> = ({
         </div>
       </div>
 
-      {/* Quick Stay Duration Presets */}
-      <div className="quick-options-row">
-        <span className="quick-label">Popular Stay Durations:</span>
-        <div className="duration-pills">
-          <button type="button" className="duration-pill-btn" onClick={() => handleQuickPreset(1)}>
-            1 Night
+      {/* Stay Duration Chips */}
+      <div className="presets-row">
+        <span className="presets-label">Quick Stay Duration:</span>
+        <div className="preset-buttons-group">
+          <button type="button" className="preset-chip-btn" onClick={() => handleQuickPreset(1)}>
+            1 Night Stay
           </button>
-          <button type="button" className="duration-pill-btn" onClick={() => handleQuickPreset(2)}>
-            2 Nights
+          <button type="button" className="preset-chip-btn" onClick={() => handleQuickPreset(2)}>
+            2 Nights Stay
           </button>
-          <button type="button" className="duration-pill-btn" onClick={() => handleQuickPreset(3)}>
-            3 Nights
+          <button type="button" className="preset-chip-btn" onClick={() => handleQuickPreset(3)}>
+            3 Nights Stay
           </button>
-          <button type="button" className="duration-pill-btn" onClick={() => handleQuickPreset(5)}>
-            5 Nights
+          <button type="button" className="preset-chip-btn" onClick={() => handleQuickPreset(5)}>
+            5 Nights Stay
           </button>
           {(checkIn || checkOut) && (
-            <button type="button" className="duration-pill-btn" onClick={handleReset} style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-              <RotateCcw size={12} /> Clear Dates
+            <button type="button" className="clear-btn" onClick={handleReset}>
+              <RotateCcw size={12} /> Clear
             </button>
           )}
         </div>
       </div>
 
-      {/* Validation Message */}
+      {/* Validation Message Banner */}
       {!validation.isValid && validation.message && (
-        <div className="alert-box alert-danger" role="alert">
-          <AlertCircle size={16} />
+        <div className="alert-banner error" role="alert">
+          <AlertCircle size={18} />
           <span>{validation.message}</span>
         </div>
       )}

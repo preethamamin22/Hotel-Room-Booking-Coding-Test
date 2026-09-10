@@ -1,7 +1,7 @@
 import React from 'react';
 import { Room } from '../types/booking';
 import { formatCurrency } from '../utils/bookingLogic';
-import { Users, AlertTriangle } from 'lucide-react';
+import { Users, Check, AlertTriangle } from 'lucide-react';
 
 interface RoomCardProps {
   room: Room;
@@ -23,65 +23,74 @@ export const RoomCard: React.FC<RoomCardProps> = ({
 
   return (
     <div
-      className={`room-card ${isSelected ? 'is-selected' : ''} ${!isSelectable ? 'is-disabled' : ''}`}
+      className={`room-card-item ${isSelected ? 'selected' : ''} ${!isSelectable ? 'disabled' : ''}`}
       onClick={() => isSelectable && onSelect(room.code)}
+      id={`room-card-${room.code}`}
     >
-      {/* Room Photo */}
-      <div className="room-media">
-        <img src={room.image} alt={room.type} className="room-photo" loading="lazy" />
-        <span className="room-code-tag">{room.code}</span>
+      {/* Room Image Container */}
+      <div className="room-card-image-wrap">
+        <img src={room.image} alt={room.type} className="room-card-image" loading="lazy" />
+        <div className="room-badge-code">{room.code}</div>
+
+        {isSelected && (
+          <div className="selected-check-badge">
+            <Check size={14} />
+            <span>Selected</span>
+          </div>
+        )}
       </div>
 
-      {/* Room Content */}
-      <div className="room-content">
+      {/* Room Details & Actions */}
+      <div className="room-card-body">
         <div>
-          <div className="room-title-row">
-            <h3 className="room-type-title">{room.type}</h3>
-            <div className="room-price-box">
-              <span className="price-amount">{formatCurrency(room.pricePerNight)}</span>
-              <div className="price-unit">per night</div>
+          <div className="room-title-rate-row">
+            <div>
+              <div className="room-category-label">{room.type}</div>
+              <h3 className="room-title-heading">{room.code} — {room.type}</h3>
+            </div>
+            <div className="room-rate-display">
+              <div className="rate-amount">{formatCurrency(room.pricePerNight)}</div>
+              <div className="rate-per-night">per night</div>
             </div>
           </div>
 
-          <p className="room-desc">{room.description}</p>
+          <p className="room-description-text">{room.description}</p>
 
-          <div className="room-specs-list">
-            <div className="spec-item">
-              <Users size={14} />
-              <span>Up to {room.maxGuests} Guests</span>
-            </div>
+          <div className="room-capacity-spec">
+            <Users size={15} />
+            <span>Accommodates up to {room.maxGuests} Guests</span>
           </div>
 
-          <div className="features-tags">
+          <div className="amenities-pills-row">
             {room.amenities.map((amenity, idx) => (
-              <span key={idx} className="feature-tag">
+              <span key={idx} className="amenity-tag-pill">
                 {amenity}
               </span>
             ))}
           </div>
         </div>
 
-        {/* Footer Actions & Status */}
-        <div className="room-card-footer">
+        {/* Footer Actions */}
+        <div className="room-card-action-bar">
           {!isAvailable ? (
-            <span className="status-badge sold-out">
-              <AlertTriangle size={14} />
-              Sold Out for Dates
+            <span className="status-indicator sold-out">
+              <AlertTriangle size={15} />
+              Booked for selected dates
             </span>
           ) : exceedsGuestCapacity ? (
-            <span className="status-badge over-capacity">
-              <AlertTriangle size={14} />
-              Exceeds Capacity ({filterGuests} Guests)
+            <span className="status-indicator capacity-warning">
+              <AlertTriangle size={15} />
+              Exceeds guest capacity ({filterGuests} requested)
             </span>
           ) : (
-            <span style={{ fontSize: '0.8rem', color: '#059669', fontWeight: '600' }}>
-              ✓ Instant Confirmation
+            <span className="status-indicator available">
+              ✓ Available for stay
             </span>
           )}
 
           <button
             type="button"
-            className={`btn-select ${isSelected ? 'selected' : ''}`}
+            className={`action-select-btn ${isSelected ? 'is-selected' : ''}`}
             disabled={!isSelectable}
             onClick={(e) => {
               e.stopPropagation();
