@@ -1,106 +1,109 @@
 import React from 'react';
 import { Room } from '../types/booking';
 import { formatCurrency } from '../utils/bookingLogic';
-import { Users, Check, AlertTriangle } from 'lucide-react';
+import { Users, Check, AlertTriangle, Lock } from 'lucide-react';
 
-interface RoomCardProps {
+interface Props {
   room: Room;
   isSelected: boolean;
-  onSelect: (roomCode: string) => void;
+  onSelect: (code: string) => void;
   isAvailable: boolean;
   filterGuests: number;
 }
 
-export const RoomCard: React.FC<RoomCardProps> = ({
-  room,
-  isSelected,
-  onSelect,
-  isAvailable,
-  filterGuests,
+export const RoomCard: React.FC<Props> = ({
+  room, isSelected, onSelect, isAvailable, filterGuests,
 }) => {
-  const exceedsGuestCapacity = filterGuests > room.maxGuests;
-  const isSelectable = isAvailable && !exceedsGuestCapacity;
+  const overCapacity = filterGuests > room.maxGuests;
+  const selectable = isAvailable && !overCapacity;
 
   return (
-    <div
-      className={`room-card-item ${isSelected ? 'selected' : ''} ${!isSelectable ? 'disabled' : ''}`}
-      onClick={() => isSelectable && onSelect(room.code)}
-      id={`room-card-${room.code}`}
+    <article
+      className={`room-card
+        ${isSelected ? 'room-card--selected' : ''}
+        ${!selectable ? 'room-card--unavailable' : ''}`}
+      onClick={() => selectable && onSelect(room.code)}
+      id={`room-${room.code}`}
     >
-      {/* Room Image Container */}
-      <div className="room-card-image-wrap">
-        <img src={room.image} alt={room.type} className="room-card-image" loading="lazy" />
-        <div className="room-badge-code">{room.code}</div>
+      {/* Photo */}
+      <div className="room-card__media">
+        <img src={room.image} alt={room.type} className="room-card__img" loading="lazy" />
+
+        <div className="room-card__code-badge">{room.code}</div>
 
         {isSelected && (
-          <div className="selected-check-badge">
-            <Check size={14} />
-            <span>Selected</span>
+          <div className="room-card__selected-badge">
+            <Check size={12} /> Selected
+          </div>
+        )}
+
+        {!isAvailable && (
+          <div className="room-card__unavail-overlay">
+            <Lock size={18} />
+            <span>Unavailable for dates</span>
           </div>
         )}
       </div>
 
-      {/* Room Details & Actions */}
-      <div className="room-card-body">
-        <div>
-          <div className="room-title-rate-row">
-            <div>
-              <div className="room-category-label">{room.type}</div>
-              <h3 className="room-title-heading">{room.code} — {room.type}</h3>
-            </div>
-            <div className="room-rate-display">
-              <div className="rate-amount">{formatCurrency(room.pricePerNight)}</div>
-              <div className="rate-per-night">per night</div>
-            </div>
+      {/* Details */}
+      <div className="room-card__body">
+        <div className="room-card__top">
+          <div>
+            <div className="room-card__category">{room.type}</div>
+            <h3 className="room-card__name">{room.code} — {room.type}</h3>
           </div>
-
-          <p className="room-description-text">{room.description}</p>
-
-          <div className="room-capacity-spec">
-            <Users size={15} />
-            <span>Accommodates up to {room.maxGuests} Guests</span>
-          </div>
-
-          <div className="amenities-pills-row">
-            {room.amenities.map((amenity, idx) => (
-              <span key={idx} className="amenity-tag-pill">
-                {amenity}
-              </span>
-            ))}
+          <div className="room-card__price">
+            <div className="room-card__price-amount">{formatCurrency(room.pricePerNight)}</div>
+            <div className="room-card__price-unit">per night, incl. taxes</div>
           </div>
         </div>
 
-        {/* Footer Actions */}
-        <div className="room-card-action-bar">
+        <p className="room-card__desc">{room.description}</p>
+
+        <div className="room-card__specs">
+          <div className="spec-item">
+            <Users size={14} />
+            Up to {room.maxGuests} Guests
+          </div>
+          {overCapacity && (
+            <div className="spec-item" style={{ color: 'var(--amber-600)' }}>
+              <AlertTriangle size={14} />
+              Exceeds limit ({filterGuests} requested)
+            </div>
+          )}
+        </div>
+
+        <div className="room-card__amenities">
+          {room.amenities.map((a, i) => (
+            <span key={i} className="amenity-tag">{a}</span>
+          ))}
+        </div>
+
+        <div className="room-card__footer">
           {!isAvailable ? (
-            <span className="status-indicator sold-out">
-              <AlertTriangle size={15} />
-              Booked for selected dates
+            <span className="status-text status-text--booked">
+              <AlertTriangle size={13} /> Sold Out for Selected Dates
             </span>
-          ) : exceedsGuestCapacity ? (
-            <span className="status-indicator capacity-warning">
-              <AlertTriangle size={15} />
-              Exceeds guest capacity ({filterGuests} requested)
+          ) : overCapacity ? (
+            <span className="status-text status-text--capacity">
+              <AlertTriangle size={13} /> Room Capacity Too Small
             </span>
           ) : (
-            <span className="status-indicator available">
-              ✓ Available for stay
+            <span className="status-text status-text--available">
+              ✓ Available for Booking
             </span>
           )}
 
           <button
             type="button"
-            className={`action-select-btn ${isSelected ? 'is-selected' : ''}`}
-            disabled={!isSelectable}
-            onClick={(e) => {
-              e.stopPropagation();
-              if (isSelectable) onSelect(room.code);
-            }}
+            className={`btn-select ${isSelected ? 'btn-select--selected' : ''}`}
+            disabled={!selectable}
+            onClick={e => { e.stopPropagation(); if (selectable) onSelect(room.code); }}
           >
             {isSelected ? '✓ Selected' : 'Select Room'}
           </button>
         </div>
       </div>
-    </div>
+    </article>
   );
 };
