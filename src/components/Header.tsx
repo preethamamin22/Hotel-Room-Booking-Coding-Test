@@ -56,6 +56,7 @@ export const Header: React.FC = () => {
           <a href="#" className="nav-link" onClick={close}>Amenities</a>
           <a href="#" className="nav-link" onClick={close}>Location</a>
           <a href="#" className="nav-link" onClick={close}>Special Offers</a>
+          <button type="button" className="nav-panel-cta" onClick={close}>Member Sign In</button>
         </div>
       </nav>
 

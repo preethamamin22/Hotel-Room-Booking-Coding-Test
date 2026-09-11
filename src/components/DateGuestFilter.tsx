@@ -104,11 +104,13 @@ export const DateGuestFilter: React.FC<Props> = ({
         {/* Quick Stay Presets & Reset */}
         <div className="sw-foot">
           <span className="sw-ql">Quick Stay:</span>
-          {[1, 2, 3, 5, 7].map(n => (
-            <button key={n} type="button" className="sw-btn" onClick={() => preset(n)}>
-              {n} {n === 1 ? 'Night' : 'Nights'}
-            </button>
-          ))}
+          <div className="sw-preset-group">
+            {[1, 2, 3, 5, 7].map(n => (
+              <button key={n} type="button" className="sw-btn" onClick={() => preset(n)}>
+                {n} {n === 1 ? 'Night' : 'Nights'}
+              </button>
+            ))}
+          </div>
           {(checkIn || checkOut) && (
             <button
               type="button"
