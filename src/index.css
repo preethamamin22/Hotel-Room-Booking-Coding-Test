@@ -494,33 +494,60 @@ select.sw-inp {
 /* ================================================================
    FOOTER
    ================================================================ */
-.footer { background: #0f0f1a; padding: 56px 0 0; margin-top: 80px; }
+.footer {
+  background: #0d0d17;
+  padding: 36px 0 0;
+  margin-top: 48px;
+  border-top: 1px solid rgba(201,148,58,.15);
+}
 .footer-grid {
   max-width: 1280px; margin: 0 auto; padding: 0 32px;
-  display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 44px;
+  display: grid; grid-template-columns: 1.15fr 1fr; gap: 40px;
+  align-items: start;
 }
-.footer-logo-row { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
-.footer-icon {
-  width: 36px; height: 36px; border-radius: 7px;
-  background: rgba(255,255,255,.06); border: 1px solid rgba(201,148,58,.2);
-  display: grid; place-items: center; color: var(--gold);
+.footer-brand-col { display: flex; flex-direction: column; gap: 10px; }
+.footer-logo-row { display: flex; align-items: center; gap: 10px; }
+.footer-name {
+  font-size: .88rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .06em; color: #fff; line-height: 1.15;
 }
-.footer-name { font-size: .9rem; font-weight: 800; text-transform: uppercase; letter-spacing: .06em; color: #fff; }
-.footer-desc { font-size: .79rem; color: rgba(255,255,255,.38); line-height: 1.8; max-width: 275px; }
-.footer-stars { color: var(--gold); font-size: .75rem; letter-spacing: 3px; margin-top: 14px; }
-.footer-col-title { font-size: .63rem; font-weight: 800; text-transform: uppercase; letter-spacing: .14em; color: rgba(255,255,255,.28); margin-bottom: 14px; }
-.footer-links { display: flex; flex-direction: column; gap: 9px; }
-.footer-link { font-size: .78rem; color: rgba(255,255,255,.44); transition: color .15s; }
+.footer-sub {
+  font-size: .58rem; text-transform: uppercase; letter-spacing: .1em;
+  color: var(--muted);
+}
+.footer-desc {
+  font-size: .75rem; color: rgba(255,255,255,.45);
+  line-height: 1.6; max-width: 380px;
+}
+.footer-contact {
+  display: flex; align-items: center; flex-wrap: wrap; gap: 8px;
+  font-size: .72rem; color: rgba(255,255,255,.4); margin-top: 2px;
+}
+.footer-dot { color: var(--gold); font-size: .7rem; }
+.footer-links-col {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 24px;
+}
+.footer-link-group { display: flex; flex-direction: column; gap: 8px; }
+.footer-col-title {
+  font-size: .62rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .12em; color: var(--gold-l); margin-bottom: 4px;
+}
+.footer-links { display: flex; flex-direction: column; gap: 7px; }
+.footer-link {
+  font-size: .75rem; color: rgba(255,255,255,.45); transition: color .15s;
+}
 .footer-link:hover { color: #fff; }
 .footer-bar {
-  max-width: 1280px; margin: 44px auto 0; padding: 18px 32px;
-  border-top: 1px solid rgba(255,255,255,.07);
-  display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap;
+  max-width: 1280px; margin: 24px auto 0; padding: 14px 32px;
+  border-top: 1px solid rgba(255,255,255,.06);
+  display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap;
 }
-.footer-copy { font-size: .7rem; color: rgba(255,255,255,.24); }
-.footer-legal { display: flex; gap: 18px; }
-.footer-legal a { font-size: .7rem; color: rgba(255,255,255,.24); transition: color .15s; }
-.footer-legal a:hover { color: rgba(255,255,255,.6); }
+.footer-copy { font-size: .68rem; color: rgba(255,255,255,.3); }
+.footer-legal { display: flex; gap: 16px; }
+.footer-legal a {
+  font-size: .68rem; color: rgba(255,255,255,.3); transition: color .15s;
+}
+.footer-legal a:hover { color: rgba(255,255,255,.7); }
 
 /* ================================================================
    RESPONSIVE
@@ -586,9 +613,9 @@ select.sw-inp {
   .btn-sel { padding: 9px 16px; font-size: .78rem; }
   .page, .sw-lift, .footer-grid, .footer-bar, .tb-inner, .nav-inner { padding-left: 16px; padding-right: 16px; }
   .hero-body { padding-left: 16px; padding-right: 16px; }
-  .footer { margin-top: 40px; padding-top: 40px; }
-  .footer-grid { grid-template-columns: 1fr; padding: 0 16px; }
-  .footer-bar { padding: 16px; }
+  .footer { margin-top: 32px; padding-top: 24px; }
+  .footer-grid { grid-template-columns: 1fr; gap: 20px; padding: 0 16px; }
+  .footer-bar { padding: 12px 16px; }
   .col-title { font-size: 1.55rem; }
 }
 
