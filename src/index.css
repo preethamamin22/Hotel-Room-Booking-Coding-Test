@@ -171,6 +171,12 @@ input, select, textarea { font-family: inherit; }
   font-size: .72rem; font-weight: 700; text-transform: uppercase;
   letter-spacing: .1em; color: var(--muted);
 }
+.sw-nights-pill {
+  font-size: .72rem; font-weight: 700; color: #875a13;
+  background: var(--gold-bg); padding: 3px 10px; border-radius: 12px;
+  border: 1px solid rgba(201,148,58,.35);
+  white-space: nowrap;
+}
 .sw-direct-perk {
   font-size: .75rem; font-weight: 600; color: var(--green); display: flex; align-items: center; gap: 5px;
   flex-wrap: wrap;

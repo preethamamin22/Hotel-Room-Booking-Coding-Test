@@ -1,12 +1,69 @@
 import { DateValidationResult, BookingCalculation, ExistingBooking } from '../types/booking';
 
 /**
+ * Formats a Date object to YYYY-MM-DD using local calendar year, month, and day.
+ * Avoids any timezone-shifting bugs caused by toISOString().
+ */
+export function formatDateStr(d: Date): string {
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
+/**
+ * Returns today's date formatted as YYYY-MM-DD in the user's local timezone.
+ */
+export function getTodayStr(): string {
+  return formatDateStr(new Date());
+}
+
+/**
  * Normalizes a date or date string to midnight (00:00:00.000) for accurate day comparison.
+ * Directly parses YYYY-MM-DD parts to ensure strict local calendar representation.
  */
 export function normalizeDate(dateInput: string | Date): Date {
-  const date = typeof dateInput === 'string' ? new Date(dateInput + 'T00:00:00') : new Date(dateInput);
-  date.setHours(0, 0, 0, 0);
-  return date;
+  if (dateInput instanceof Date) {
+    const d = new Date(dateInput.getTime());
+    d.setHours(0, 0, 0, 0);
+    return d;
+  }
+  if (typeof dateInput === 'string') {
+    const parts = dateInput.split('T')[0].split('-');
+    if (parts.length === 3) {
+      const year = parseInt(parts[0], 10);
+      const month = parseInt(parts[1], 10) - 1;
+      const day = parseInt(parts[2], 10);
+      return new Date(year, month, day, 0, 0, 0, 0);
+    }
+    const d = new Date(dateInput);
+    d.setHours(0, 0, 0, 0);
+    return d;
+  }
+  return new Date();
+}
+
+/**
+ * Adds (or subtracts) N days to a date and returns a clean YYYY-MM-DD string.
+ */
+export function addDays(dateInput: string | Date, n: number): string {
+  const base = normalizeDate(dateInput);
+  base.setDate(base.getDate() + n);
+  return formatDateStr(base);
+}
+
+/**
+ * Formats a YYYY-MM-DD date string into human-readable format, e.g. "Sat, 12 Sept, 2026".
+ */
+export function formatDisplayDate(dateInput: string | Date): string {
+  if (!dateInput) return '';
+  const d = normalizeDate(dateInput);
+  return d.toLocaleDateString('en-IN', {
+    weekday: 'short',
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+  });
 }
 
 /**

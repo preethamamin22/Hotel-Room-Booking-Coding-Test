@@ -5,6 +5,10 @@ import {
   calculateBooking,
   isRoomAvailable,
   formatCurrency,
+  addDays,
+  formatDateStr,
+  getTodayStr,
+  formatDisplayDate,
 } from './bookingLogic';
 import { ExistingBooking } from '../types/booking';
 
@@ -114,6 +118,35 @@ describe('Booking Logic Utilities', () => {
     it('should format numbers to Indian Rupee symbol format', () => {
       const formatted = formatCurrency(3500);
       expect(formatted).toContain('3,500');
+    });
+  });
+
+  describe('Date Helpers', () => {
+    it('addDays should add positive and negative days correctly', () => {
+      expect(addDays('2026-09-12', 1)).toBe('2026-09-13');
+      expect(addDays('2026-09-12', 3)).toBe('2026-09-15');
+      expect(addDays('2026-09-12', -1)).toBe('2026-09-11');
+    });
+
+    it('addDays should handle month boundary correctly', () => {
+      expect(addDays('2026-09-30', 1)).toBe('2026-10-01');
+      expect(addDays('2026-02-28', 1)).toBe('2026-03-01');
+    });
+
+    it('formatDateStr should return YYYY-MM-DD from Date', () => {
+      const d = new Date(2026, 8, 12);
+      expect(formatDateStr(d)).toBe('2026-09-12');
+    });
+
+    it('getTodayStr should return a valid YYYY-MM-DD pattern', () => {
+      const todayStr = getTodayStr();
+      expect(todayStr).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+    });
+
+    it('formatDisplayDate should format cleanly without crashing', () => {
+      const formatted = formatDisplayDate('2026-09-12');
+      expect(formatted).toContain('12');
+      expect(formatted).toContain('2026');
     });
   });
 });

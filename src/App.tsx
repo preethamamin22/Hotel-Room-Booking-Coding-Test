@@ -6,9 +6,7 @@ import { DateGuestFilter } from './components/DateGuestFilter';
 import { RoomCard } from './components/RoomCard';
 import { BookingDetailsView } from './components/BookingDetailsView';
 import { SAMPLE_ROOMS, MOCK_EXISTING_BOOKINGS } from './data/mockData';
-import { validateBookingDates, calculateBooking, isRoomAvailable } from './utils/bookingLogic';
-
-const today = () => new Date().toISOString().split('T')[0];
+import { validateBookingDates, calculateBooking, isRoomAvailable, getTodayStr, addDays } from './utils/bookingLogic';
 
 export default function App() {
   // Dates start unselected for clean initial UX (no errors by default)
@@ -32,19 +30,13 @@ export default function App() {
     ? calculateBooking(selectedRoom.pricePerNight, checkIn, checkOut)
     : { nights: 0, pricePerNight: selectedRoom?.pricePerNight ?? 0, totalPrice: 0 };
 
-  const promptDates = (message?: string) => {
-    setDateNotice(message || 'Please select your check-in and check-out dates above to proceed with reservation.');
-    const ci = document.getElementById('ci');
-    if (ci) {
-      ci.focus();
-      ci.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
-  };
-
   const handleSelectRoom = (code: string) => {
     if (!hasValidDates) {
-      promptDates('Please select your check-in and check-out dates before reserving a room.');
-      return;
+      // Auto-initialize stay to today + 2 nights so user can seamlessly proceed with instant quote
+      const defaultIn = getTodayStr();
+      const defaultOut = addDays(defaultIn, 2);
+      setCheckIn(defaultIn);
+      setCheckOut(defaultOut);
     }
     setDateNotice(null);
     setSelectedCode(code);
@@ -72,7 +64,7 @@ export default function App() {
           onCheckOut={(v) => { setCheckOut(v); setDateNotice(null); }}
           onGuestsChange={setGuests}
           validation={validation}
-          minDate={today()}
+          minDate={getTodayStr()}
         />
       </div>
 

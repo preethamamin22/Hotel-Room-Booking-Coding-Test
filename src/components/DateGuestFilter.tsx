@@ -1,5 +1,6 @@
 import React from 'react';
 import { DateValidationResult } from '../types/booking';
+import { addDays, calculateNights } from '../utils/bookingLogic';
 
 interface Props {
   checkIn: string;
@@ -22,14 +23,40 @@ export const DateGuestFilter: React.FC<Props> = ({
   validation,
   minDate,
 }) => {
-  const preset = (n: number) => {
-    const base = new Date((checkIn || minDate) + 'T00:00:00');
-    const end = new Date(base);
-    end.setDate(end.getDate() + n);
-    const fmt = (d: Date) => d.toISOString().split('T')[0];
-    if (!checkIn) onCheckIn(fmt(base));
-    onCheckOut(fmt(end));
+  const nights = checkIn && checkOut && validation.isValid ? calculateNights(checkIn, checkOut) : 0;
+
+  const handleCheckInChange = (val: string) => {
+    onCheckIn(val);
+    if (!val) return;
+    // Auto-advance check-out if empty or if checkout <= checkin
+    if (!checkOut || checkOut <= val) {
+      onCheckOut(addDays(val, 1));
+    }
   };
+
+  const handleCheckOutChange = (val: string) => {
+    onCheckOut(val);
+    if (!val) return;
+    if (!checkIn) {
+      const prev = addDays(val, -1);
+      onCheckIn(prev >= minDate ? prev : minDate);
+    } else if (val <= checkIn) {
+      const prev = addDays(val, -1);
+      if (prev >= minDate) {
+        onCheckIn(prev);
+      }
+    }
+  };
+
+  const preset = (n: number) => {
+    const start = checkIn && checkIn >= minDate ? checkIn : minDate;
+    const end = addDays(start, n);
+    onCheckIn(start);
+    onCheckOut(end);
+  };
+
+  // Check-out must be at least 1 day after check-in (or tomorrow)
+  const minCheckOut = checkIn ? addDays(checkIn, 1) : addDays(minDate, 1);
 
   return (
     <div className="sw-wrap">
@@ -38,6 +65,11 @@ export const DateGuestFilter: React.FC<Props> = ({
           <div className="sw-head-left">
             <span className="sw-dot" />
             <span className="sw-head-title">Select Dates & Guests</span>
+            {nights > 0 && (
+              <span className="sw-nights-pill">
+                🌙 {nights} {nights === 1 ? 'Night' : 'Nights'}
+              </span>
+            )}
           </div>
           <span className="sw-direct-perk">✓ Best Rate Guarantee · Free Cancellation</span>
         </div>
@@ -56,7 +88,7 @@ export const DateGuestFilter: React.FC<Props> = ({
                 className={`sw-inp${validation.errorType === 'PAST_DATE' ? ' err' : ''}`}
                 value={checkIn}
                 min={minDate}
-                onChange={e => onCheckIn(e.target.value)}
+                onChange={e => handleCheckInChange(e.target.value)}
               />
             </div>
           </div>
@@ -73,8 +105,8 @@ export const DateGuestFilter: React.FC<Props> = ({
                 type="date"
                 className={`sw-inp${validation.errorType === 'INVALID_RANGE' ? ' err' : ''}`}
                 value={checkOut}
-                min={checkIn || minDate}
-                onChange={e => onCheckOut(e.target.value)}
+                min={minCheckOut}
+                onChange={e => handleCheckOutChange(e.target.value)}
               />
             </div>
           </div>

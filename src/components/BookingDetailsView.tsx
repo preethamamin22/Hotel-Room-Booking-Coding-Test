@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Room, BookingCalculation, GuestDetails } from '../types/booking';
-import { formatCurrency } from '../utils/bookingLogic';
+import { formatCurrency, formatDisplayDate } from '../utils/bookingLogic';
 
 interface Props {
   room: Room;
@@ -36,14 +36,7 @@ export const BookingDetailsView: React.FC<Props> = ({
     createdAt: string;
   } | null>(null);
 
-  const formatDate = (s: string) => s
-    ? new Date(s + 'T00:00:00').toLocaleDateString('en-IN', {
-        weekday: 'short',
-        day: 'numeric',
-        month: 'short',
-        year: 'numeric',
-      })
-    : '';
+  const formatDate = (s: string) => formatDisplayDate(s);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
