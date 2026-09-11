@@ -1,61 +1,64 @@
-import React, { useState, useEffect } from 'react';
-import { Logo } from './Logo';
+import React from 'react';
 
 export const Header: React.FC = () => {
-  const [open, setOpen] = useState(false);
-
-  useEffect(() => {
-    const onResize = () => { if (window.innerWidth > 768) setOpen(false); };
-    window.addEventListener('resize', onResize);
-    return () => window.removeEventListener('resize', onResize);
-  }, []);
-  useEffect(() => { document.body.style.overflow = open ? 'hidden' : ''; return () => { document.body.style.overflow = ''; }; }, [open]);
-
-  const close = () => setOpen(false);
-
   return (
-    <>
-      {/* Navbar */}
-      <nav className="nav">
-        <div className="nav-inner">
-          <a href="#" className="nav-brand" onClick={close}>
-            <Logo size={42} />
-            <div>
-              <div className="nav-name">Raintech Hotels</div>
-              <div className="nav-sub">Hotels & Luxury Resorts</div>
-            </div>
-          </a>
+    <header className="b-header">
+      {/* Top Navbar */}
+      <div className="b-header-top">
+        <a href="#" className="b-brand">
+          <span>Raintech</span>
+          <span className="b-brand-dot">.com</span>
+        </a>
 
-          <div className="nav-links">
-            <a href="#" className="nav-link active" onClick={close}>Accommodations</a>
-            <a href="#" className="nav-link" onClick={close}>Dining & Spa</a>
-            <a href="#" className="nav-link" onClick={close}>Amenities</a>
-            <a href="#" className="nav-link" onClick={close}>Location</a>
-            <a href="#" className="nav-link" onClick={close}>Offers</a>
-          </div>
-
-          <button
-            className={`nav-hamburger${open ? ' open' : ''}`}
-            onClick={() => setOpen(v => !v)}
-            aria-label="Toggle menu"
-          >
-            <span /><span /><span />
+        <div className="b-header-nav">
+          <button type="button" className="b-nav-pill">
+            <span>INR</span>
           </button>
-
-          <button className="nav-cta">Member Login</button>
+          <button type="button" className="b-nav-pill" title="India">
+            <span style={{ fontSize: '1.1rem' }}>🇮🇳</span>
+          </button>
+          <button type="button" className="b-nav-pill" title="Customer Service Help">
+            <span style={{ fontSize: '1rem' }}>?</span>
+          </button>
+          <button type="button" className="b-nav-pill border">
+            List your property
+          </button>
+          <button type="button" className="b-btn-white">
+            Register
+          </button>
+          <button type="button" className="b-btn-white">
+            Sign in
+          </button>
         </div>
+      </div>
 
-        {/* Mobile panel */}
-        <div className={`nav-panel${open ? ' open' : ''}`}>
-          <a href="#" className="nav-link active" onClick={close}>Accommodations</a>
-          <a href="#" className="nav-link" onClick={close}>Dining & Spa</a>
-          <a href="#" className="nav-link" onClick={close}>Amenities</a>
-          <a href="#" className="nav-link" onClick={close}>Location</a>
-          <a href="#" className="nav-link" onClick={close}>Offers</a>
-        </div>
+      {/* Product Categories Tab Bar */}
+      <nav className="b-header-cats" aria-label="Product categories">
+        <a href="#" className="b-cat-tab active">
+          <span>🛏️</span>
+          <span>Stays</span>
+        </a>
+        <a href="#" className="b-cat-tab">
+          <span>✈️</span>
+          <span>Flights</span>
+        </a>
+        <a href="#" className="b-cat-tab">
+          <span>🏨✈️</span>
+          <span>Flight + Hotel</span>
+        </a>
+        <a href="#" className="b-cat-tab">
+          <span>🚗</span>
+          <span>Car rentals</span>
+        </a>
+        <a href="#" className="b-cat-tab">
+          <span>🎡</span>
+          <span>Attractions</span>
+        </a>
+        <a href="#" className="b-cat-tab">
+          <span>🚕</span>
+          <span>Airport taxis</span>
+        </a>
       </nav>
-
-      {open && <div className="nav-overlay" onClick={close} />}
-    </>
+    </header>
   );
 };

@@ -8,103 +8,64 @@ interface Props {
 
 export const HotelShowcase: React.FC<Props> = ({ onSelectDatesPrompt }) => {
   return (
-    <section className="showcase" aria-label="Hotel overview and room preview">
-      {/* Banner prompt */}
-      <div className="showcase-banner">
-        <div className="showcase-banner-icon">📅</div>
-        <div className="showcase-banner-text">
-          <h3>Select your check-in & check-out dates above</h3>
-          <p>Enter your stay dates and guests to view live rates, seasonal offers, and real-time room availability.</p>
-        </div>
-        <button type="button" className="showcase-banner-btn" onClick={onSelectDatesPrompt}>
-          Choose Dates
+    <div>
+      {/* Pre-search Prompt Box */}
+      <div className="b-presearch-box">
+        <div className="b-presearch-icon">📅</div>
+        <h2 className="b-presearch-title">Select dates to see prices and availability</h2>
+        <p className="b-presearch-sub">
+          Check-in and check-out dates are required to view live suite rates, free cancellation options, and confirmed inventory.
+        </p>
+        <button
+          type="button"
+          className="b-presearch-action"
+          onClick={onSelectDatesPrompt}
+        >
+          Enter Stay Dates
         </button>
       </div>
 
-      {/* Booking.com style perks */}
-      <div className="showcase-perks">
-        <div className="perk-card">
-          <div className="perk-icon">🛡️</div>
-          <div>
-            <div className="perk-title">Best Price Guarantee</div>
-            <div className="perk-desc">Book direct with no hidden booking fees or surcharges.</div>
-          </div>
-        </div>
+      {/* Room Previews Section */}
+      <div style={{ marginBottom: 32 }}>
+        <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#1a1a1a', marginBottom: 14 }}>
+          Featured Accommodations at Raintech Grand Stays
+        </h3>
 
-        <div className="perk-card">
-          <div className="perk-icon">☕</div>
-          <div>
-            <div className="perk-title">Complimentary Breakfast</div>
-            <div className="perk-desc">Daily gourmet buffet included with all direct suite reservations.</div>
-          </div>
-        </div>
-
-        <div className="perk-card">
-          <div className="perk-icon">↺</div>
-          <div>
-            <div className="perk-title">Free Cancellation</div>
-            <div className="perk-desc">Flexible travel plans with 100% refund up to 24 hours before check-in.</div>
-          </div>
-        </div>
-
-        <div className="perk-card">
-          <div className="perk-icon">⭐</div>
-          <div>
-            <div className="perk-title">4.9 / 5 Guest Rating</div>
-            <div className="perk-desc">Ranked #1 luxury boutique hotel in Bengaluru for 2026.</div>
-          </div>
-        </div>
-      </div>
-
-      {/* Room Category Previews */}
-      <div className="showcase-section">
-        <div className="showcase-section-head">
-          <div>
-            <h2 className="showcase-title">Explore Our Accommodations</h2>
-            <p className="showcase-subtitle">Choose from 5 exquisitely appointed luxury suites and rooms</p>
-          </div>
-          <span className="showcase-count">{SAMPLE_ROOMS.length} Room Types Available</span>
-        </div>
-
-        <div className="showcase-grid">
+        <div className="b-preview-grid">
           {SAMPLE_ROOMS.map(room => (
-            <div key={room.code} className="showcase-card">
-              <div className="showcase-card-img-wrap">
-                <img src={room.image} alt={room.type} className="showcase-card-img" />
-                <span className="showcase-card-badge">{room.code}</span>
-              </div>
-
-              <div className="showcase-card-body">
-                <div className="showcase-card-top">
-                  <h3 className="showcase-card-title">{room.type}</h3>
-                  <div className="showcase-card-price">
-                    <span className="showcase-price-from">From</span>
-                    <span className="showcase-price-val">{formatCurrency(room.pricePerNight)}</span>
-                    <span className="showcase-price-per">/ night</span>
-                  </div>
+            <div key={room.code} className="b-pcard">
+              <img src={room.image} alt={room.type} className="b-pcard-img" />
+              <div className="b-pcard-body">
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <h4 className="b-pcard-title">{room.type}</h4>
+                  <span style={{ fontSize: '.75rem', color: 'var(--b-text-muted)', fontWeight: 600 }}>{room.code}</span>
                 </div>
-
-                <p className="showcase-card-desc">{room.description}</p>
-
-                <div className="showcase-card-amenities">
+                <p className="b-pcard-desc">{room.description}</p>
+                <div className="b-pcard-amenities">
                   {room.amenities.slice(0, 3).map(a => (
-                    <span key={a} className="showcase-amenity-chip">✓ {a}</span>
+                    <span key={a} className="b-pcard-amenity">✓ {a}</span>
                   ))}
-                  <span className="showcase-amenity-chip">👥 Up to {room.maxGuests} Guests</span>
+                  <span className="b-pcard-amenity">👥 Max {room.maxGuests} guests</span>
                 </div>
-
-                <button
-                  type="button"
-                  className="showcase-book-btn"
-                  onClick={onSelectDatesPrompt}
-                >
-                  Select Dates to Check Availability
-                </button>
+                <div className="b-pcard-foot">
+                  <div>
+                    <span className="b-pcard-from">From</span>
+                    <span className="b-pcard-price">{formatCurrency(room.pricePerNight)}</span>
+                    <span style={{ fontSize: '.72rem', color: 'var(--b-text-muted)' }}> / night</span>
+                  </div>
+                  <button
+                    type="button"
+                    className="b-pcard-btn"
+                    onClick={onSelectDatesPrompt}
+                  >
+                    See availability
+                  </button>
+                </div>
               </div>
             </div>
           ))}
         </div>
       </div>
-    </section>
+    </div>
   );
 };

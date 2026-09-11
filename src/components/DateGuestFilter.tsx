@@ -31,7 +31,6 @@ export const DateGuestFilter: React.FC<Props> = ({
   const [popoverOpen, setPopoverOpen] = useState(false);
   const popoverRef = useRef<HTMLDivElement>(null);
 
-  // Close popover when clicking outside
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (popoverRef.current && !popoverRef.current.contains(e.target as Node)) {
@@ -42,194 +41,156 @@ export const DateGuestFilter: React.FC<Props> = ({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const preset = (n: number) => {
-    const base = new Date((checkIn || minDate) + 'T00:00:00');
-    const end = new Date(base);
-    end.setDate(end.getDate() + n);
-    const fmt = (d: Date) => d.toISOString().split('T')[0];
-    if (!checkIn) onCheckIn(fmt(base));
-    onCheckOut(fmt(end));
-  };
-
-  const guestLabel = `${adults} adult${adults > 1 ? 's' : ''}${childrenCount > 0 ? ` · ${childrenCount} child${childrenCount > 1 ? 'ren' : ''}` : ''}`;
+  const guestSummary = `${adults} adult${adults > 1 ? 's' : ''} · ${childrenCount} child${childrenCount !== 1 ? 'ren' : ''} · 1 room`;
 
   return (
-    <div className="sw-wrap">
-      <div className="sw-lift">
-        <div className="sw-card">
-          <div className="sw-head">
-            <span className="sw-dot" />
-            <span className="sw-title">Search Luxury Stays & Suites</span>
+    <div className="b-search-wrap">
+      <div className="b-search-box">
+        {/* Destination / Hotel (Booking.com style) */}
+        <div className="b-search-field">
+          <span className="b-field-icon">🛏️</span>
+          <div>
+            <div className="b-search-text">Raintech Grand Stays & Suites</div>
+            <div className="b-search-sub">Palace Road, Bengaluru, India</div>
           </div>
+        </div>
 
-          <div className="sw-grid">
-            {/* Check-in Date */}
-            <div className="sw-field">
-              <label htmlFor="ci" className="sw-label">Check-in Date</label>
-              <div className="sw-inp-wrap">
-                <svg className="sw-inp-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
-                </svg>
-                <input
-                  id="ci"
-                  type="date"
-                  className={`sw-inp${validation.errorType === 'PAST_DATE' ? ' err' : ''}`}
-                  value={checkIn}
-                  min={minDate}
-                  placeholder="Select check-in"
-                  onChange={e => onCheckIn(e.target.value)}
-                />
-              </div>
-            </div>
+        {/* Stay Dates (Combined calendar pill) */}
+        <div className="b-search-field">
+          <span className="b-field-icon">📅</span>
+          <div className="b-date-inputs">
+            <input
+              id="ci"
+              type="date"
+              className="b-date-inp"
+              value={checkIn}
+              min={minDate}
+              title="Check-in date"
+              onChange={e => onCheckIn(e.target.value)}
+            />
+            <span className="b-date-sep">—</span>
+            <input
+              id="co"
+              type="date"
+              className="b-date-inp"
+              value={checkOut}
+              min={checkIn || minDate}
+              title="Check-out date"
+              onChange={e => onCheckOut(e.target.value)}
+            />
+          </div>
+        </div>
 
-            {/* Check-out Date */}
-            <div className="sw-field">
-              <label htmlFor="co" className="sw-label">Check-out Date</label>
-              <div className="sw-inp-wrap">
-                <svg className="sw-inp-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
-                </svg>
-                <input
-                  id="co"
-                  type="date"
-                  className={`sw-inp${validation.errorType === 'INVALID_RANGE' ? ' err' : ''}`}
-                  value={checkOut}
-                  min={checkIn || minDate}
-                  placeholder="Select check-out"
-                  onChange={e => onCheckOut(e.target.value)}
-                />
-              </div>
-            </div>
+        {/* Occupancy / Guest Stepper Popover */}
+        <div className="b-search-field" ref={popoverRef}>
+          <span className="b-field-icon">👤</span>
+          <button
+            type="button"
+            className="b-guest-btn"
+            onClick={() => setPopoverOpen(v => !v)}
+            aria-expanded={popoverOpen}
+          >
+            <span className="b-guest-label">{guestSummary}</span>
+            <span className="b-guest-arrow">▾</span>
+          </button>
 
-            {/* Guests Popover (Booking.com style) */}
-            <div className="sw-field" ref={popoverRef} style={{ position: 'relative' }}>
-              <label className="sw-label">Guests</label>
-              <div className="sw-inp-wrap">
-                <svg className="sw-inp-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-                </svg>
-                <button
-                  type="button"
-                  id="gs-trigger"
-                  className="sw-inp sw-guest-btn"
-                  onClick={() => setPopoverOpen(v => !v)}
-                  aria-expanded={popoverOpen}
-                >
-                  <span className="sw-guest-text">{guestLabel}</span>
-                  <span className="sw-caret">▾</span>
-                </button>
-              </div>
-
-              {popoverOpen && (
-                <div className="sw-popover">
-                  <div className="sw-popover-row">
-                    <div>
-                      <div className="sw-popover-lbl">Adults</div>
-                      <div className="sw-popover-sub">Age 13 or above</div>
-                    </div>
-                    <div className="sw-stepper">
-                      <button
-                        type="button"
-                        className="sw-step-btn"
-                        disabled={adults <= 1}
-                        onClick={() => onAdultsChange(Math.max(1, adults - 1))}
-                        aria-label="Decrease adults"
-                      >
-                        –
-                      </button>
-                      <span className="sw-step-val">{adults}</span>
-                      <button
-                        type="button"
-                        className="sw-step-btn"
-                        disabled={adults >= 4}
-                        onClick={() => onAdultsChange(Math.min(4, adults + 1))}
-                        aria-label="Increase adults"
-                      >
-                        +
-                      </button>
-                    </div>
-                  </div>
-
-                  <div className="sw-popover-row">
-                    <div>
-                      <div className="sw-popover-lbl">Children</div>
-                      <div className="sw-popover-sub">Age 0 to 12</div>
-                    </div>
-                    <div className="sw-stepper">
-                      <button
-                        type="button"
-                        className="sw-step-btn"
-                        disabled={childrenCount <= 0}
-                        onClick={() => onChildrenChange(Math.max(0, childrenCount - 1))}
-                        aria-label="Decrease children"
-                      >
-                        –
-                      </button>
-                      <span className="sw-step-val">{childrenCount}</span>
-                      <button
-                        type="button"
-                        className="sw-step-btn"
-                        disabled={childrenCount >= 3}
-                        onClick={() => onChildrenChange(Math.min(3, childrenCount + 1))}
-                        aria-label="Increase children"
-                      >
-                        +
-                      </button>
-                    </div>
-                  </div>
-
-                  <div className="sw-popover-foot">
-                    <button
-                      type="button"
-                      className="sw-popover-done"
-                      onClick={() => setPopoverOpen(false)}
-                    >
-                      Done
-                    </button>
-                  </div>
+          {popoverOpen && (
+            <div className="b-popover">
+              <div className="b-popover-row">
+                <div>
+                  <div className="b-popover-title">Adults</div>
+                  <div className="b-popover-sub">Ages 13 or above</div>
                 </div>
-              )}
-            </div>
+                <div className="b-stepper">
+                  <button
+                    type="button"
+                    className="b-step-btn"
+                    disabled={adults <= 1}
+                    onClick={() => onAdultsChange(Math.max(1, adults - 1))}
+                  >
+                    –
+                  </button>
+                  <span className="b-step-val">{adults}</span>
+                  <button
+                    type="button"
+                    className="b-step-btn"
+                    disabled={adults >= 4}
+                    onClick={() => onAdultsChange(Math.min(4, adults + 1))}
+                  >
+                    +
+                  </button>
+                </div>
+              </div>
 
-            {/* Search Button */}
-            <div className="sw-field sw-search-action">
-              <label className="sw-label" style={{ visibility: 'hidden' }}>Search</label>
+              <div className="b-popover-row">
+                <div>
+                  <div className="b-popover-title">Children</div>
+                  <div className="b-popover-sub">Ages 0 to 12</div>
+                </div>
+                <div className="b-stepper">
+                  <button
+                    type="button"
+                    className="b-step-btn"
+                    disabled={childrenCount <= 0}
+                    onClick={() => onChildrenChange(Math.max(0, childrenCount - 1))}
+                  >
+                    –
+                  </button>
+                  <span className="b-step-val">{childrenCount}</span>
+                  <button
+                    type="button"
+                    className="b-step-btn"
+                    disabled={childrenCount >= 3}
+                    onClick={() => onChildrenChange(Math.min(3, childrenCount + 1))}
+                  >
+                    +
+                  </button>
+                </div>
+              </div>
+
+              <div className="b-popover-row">
+                <div>
+                  <div className="b-popover-title">Rooms</div>
+                  <div className="b-popover-sub">1 private room</div>
+                </div>
+                <span style={{ fontSize: '.88rem', fontWeight: 600 }}>1</span>
+              </div>
+
               <button
                 type="button"
-                className="sw-search-btn"
-                onClick={onSearch}
+                className="b-popover-done"
+                onClick={() => setPopoverOpen(false)}
               >
-                <span>Search Rooms</span>
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                  <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
-                </svg>
+                Done
               </button>
             </div>
-          </div>
-
-          <div className="sw-foot">
-            <span className="sw-ql">Quick Select:</span>
-            {[1, 2, 3, 5, 7].map(n => (
-              <button key={n} type="button" className="sw-btn" onClick={() => preset(n)}>
-                {n} {n === 1 ? 'Night' : 'Nights'}
-              </button>
-            ))}
-            {(checkIn || checkOut) && (
-              <button
-                type="button"
-                className="sw-btn clear"
-                onClick={() => { onCheckIn(''); onCheckOut(''); }}
-              >
-                ↺ Clear Dates
-              </button>
-            )}
-          </div>
-
-          {!validation.isValid && validation.message && (
-            <div className="sw-err" role="alert">⚠ {validation.message}</div>
           )}
         </div>
+
+        {/* Big Blue Search Action Button */}
+        <button
+          type="button"
+          className="b-search-btn"
+          onClick={onSearch}
+        >
+          Search
+        </button>
       </div>
+
+      {!validation.isValid && validation.message && (
+        <div style={{
+          marginTop: 10,
+          background: 'var(--b-red-bg)',
+          color: 'var(--b-red)',
+          padding: '10px 14px',
+          borderRadius: 6,
+          border: '1px solid #f8b4b4',
+          fontSize: '.84rem',
+          fontWeight: 600,
+        }}>
+          ⚠ {validation.message}
+        </div>
+      )}
     </div>
   );
 };
