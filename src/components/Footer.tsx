@@ -1,14 +1,15 @@
 import React from 'react';
+import { Logo } from './Logo';
 
 export const Footer: React.FC = () => (
   <footer className="footer">
     <div className="footer-grid">
       <div>
         <div className="footer-logo-row">
-          <div className="footer-icon">🏨</div>
+          <Logo size={36} />
           <span className="footer-name">Raintech Hotels</span>
         </div>
-        <p className="footer-desc">A collection of five-star luxury properties offering unmatched hospitality across India's most premier destinations.</p>
+        <p className="footer-desc">A collection of five-star luxury properties offering unmatched hospitality across premier destinations.</p>
         <div className="footer-stars">★ ★ ★ ★ ★</div>
       </div>
 
@@ -42,7 +43,7 @@ export const Footer: React.FC = () => (
     </div>
 
     <div className="footer-bar">
-      <span className="footer-copy">© 2026 Raintech Hotels & Resorts Pvt. Ltd. · Developer Skills Assessment</span>
+      <span className="footer-copy">© 2026 Raintech Hotels & Resorts Pvt. Ltd. All rights reserved.</span>
       <div className="footer-legal">
         <a href="#">Privacy Policy</a>
         <a href="#">Terms & Conditions</a>

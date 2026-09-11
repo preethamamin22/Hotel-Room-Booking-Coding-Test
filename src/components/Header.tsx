@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Logo } from './Logo';
 
 export const Header: React.FC = () => {
   const [open, setOpen] = useState(false);
@@ -18,7 +19,7 @@ export const Header: React.FC = () => {
       <nav className="nav">
         <div className="nav-inner">
           <a href="#" className="nav-brand" onClick={close}>
-            <div className="nav-logo">🏨</div>
+            <Logo size={42} />
             <div>
               <div className="nav-name">Raintech Hotels</div>
               <div className="nav-sub">Hotels & Luxury Resorts</div>
