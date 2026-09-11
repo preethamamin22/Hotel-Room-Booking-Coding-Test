@@ -32,7 +32,8 @@ export interface GuestDetails {
   fullName: string;
   email: string;
   phone: string;
-  adults: number;
-  children: number;
+  guests?: number;
+  adults?: number;
+  children?: number;
   specialRequests?: string;
 }

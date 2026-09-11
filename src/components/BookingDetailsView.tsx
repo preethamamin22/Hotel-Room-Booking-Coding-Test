@@ -6,8 +6,9 @@ interface Props {
   room: Room;
   checkIn: string;
   checkOut: string;
-  adults: number;
-  childrenCount: number;
+  guests?: number;
+  adults?: number;
+  childrenCount?: number;
   calculation: BookingCalculation;
   onBack: () => void;
 }
@@ -16,11 +17,13 @@ export const BookingDetailsView: React.FC<Props> = ({
   room,
   checkIn,
   checkOut,
-  adults,
-  childrenCount,
+  guests = 2,
+  adults = 2,
+  childrenCount = 0,
   calculation,
   onBack,
 }) => {
+  const displayGuests = guests || (adults + childrenCount) || 1;
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
@@ -65,8 +68,9 @@ export const BookingDetailsView: React.FC<Props> = ({
         fullName: fullName.trim(),
         email: email.trim(),
         phone: phone.trim(),
-        adults,
-        children: childrenCount,
+        guests: displayGuests,
+        adults: displayGuests,
+        children: 0,
         specialRequests: specialReq.trim(),
       },
       createdAt: new Date().toLocaleDateString('en-IN', {
@@ -137,7 +141,7 @@ export const BookingDetailsView: React.FC<Props> = ({
               </div>
               <div className="voucher-row">
                 <span className="v-lbl">Stay Duration</span>
-                <span>{calculation.nights} Night{calculation.nights > 1 ? 's' : ''} · {adults} Adult{adults > 1 ? 's' : ''}{childrenCount > 0 ? `, ${childrenCount} Child${childrenCount > 1 ? 'ren' : ''}` : ''}</span>
+                <span>{calculation.nights} Night{calculation.nights > 1 ? 's' : ''} · {displayGuests} Guest{displayGuests > 1 ? 's' : ''}</span>
               </div>
               {confirmedBooking.guest.specialRequests && (
                 <div className="voucher-row">
@@ -193,7 +197,7 @@ export const BookingDetailsView: React.FC<Props> = ({
               </div>
 
               <div className="summary-duration-pill">
-                🌙 {calculation.nights} Night{calculation.nights > 1 ? 's' : ''} · {adults} Adult{adults > 1 ? 's' : ''}{childrenCount > 0 ? `, ${childrenCount} Child${childrenCount > 1 ? 'ren' : ''}` : ''}
+                🌙 {calculation.nights} Night{calculation.nights > 1 ? 's' : ''} · {displayGuests} Guest{displayGuests > 1 ? 's' : ''}
               </div>
 
               <div className="summary-perks-list">

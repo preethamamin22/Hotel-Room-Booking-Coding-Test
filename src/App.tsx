@@ -14,8 +14,7 @@ export default function App() {
   // Dates start unselected for clean initial UX (no errors by default)
   const [checkIn, setCheckIn] = useState('');
   const [checkOut, setCheckOut] = useState('');
-  const [adults, setAdults] = useState(2);
-  const [childrenCount, setChildrenCount] = useState(0);
+  const [guests, setGuests] = useState(2);
 
   // Selected room and page view state ('rooms' | 'details')
   const [selectedCode, setSelectedCode] = useState<string | null>(null);
@@ -24,7 +23,7 @@ export default function App() {
 
   const searchRef = useRef<HTMLDivElement>(null);
 
-  const totalGuests = adults + childrenCount;
+  const totalGuests = guests;
   const validation = validateBookingDates(checkIn, checkOut);
   const hasValidDates = !!checkIn && !!checkOut && validation.isValid;
 
@@ -68,16 +67,10 @@ export default function App() {
         <DateGuestFilter
           checkIn={checkIn}
           checkOut={checkOut}
-          adults={adults}
-          childrenCount={childrenCount}
+          guests={guests}
           onCheckIn={(v) => { setCheckIn(v); setDateNotice(null); }}
           onCheckOut={(v) => { setCheckOut(v); setDateNotice(null); }}
-          onAdultsChange={setAdults}
-          onChildrenChange={setChildrenCount}
-          onSearch={() => {
-            if (!hasValidDates) promptDates();
-            else setDateNotice(null);
-          }}
+          onGuestsChange={setGuests}
           validation={validation}
           minDate={today()}
         />
@@ -110,8 +103,7 @@ export default function App() {
             room={selectedRoom}
             checkIn={checkIn}
             checkOut={checkOut}
-            adults={adults}
-            childrenCount={childrenCount}
+            guests={guests}
             calculation={calculation}
             onBack={handleBackToRooms}
           />
@@ -156,7 +148,7 @@ export default function App() {
                 <h2 className="col-title">Available Accommodations</h2>
                 <div className="col-sub">
                   {hasValidDates
-                    ? `Showing live pricing for ${checkIn} to ${checkOut} (${calculation.nights} ${calculation.nights === 1 ? 'Night' : 'Nights'}) · ${adults} Adult${adults > 1 ? 's' : ''}${childrenCount > 0 ? `, ${childrenCount} Child${childrenCount > 1 ? 'ren' : ''}` : ''}`
+                    ? `Showing live pricing for ${checkIn} to ${checkOut} (${calculation.nights} ${calculation.nights === 1 ? 'Night' : 'Nights'}) · ${guests} ${guests === 1 ? 'Guest' : 'Guests'}`
                     : `Showing all ${SAMPLE_ROOMS.length} room types · Select your stay dates above to calculate total price`}
                 </div>
               </div>
