@@ -14,23 +14,6 @@ export const Header: React.FC = () => {
 
   return (
     <>
-      {/* Utility bar */}
-      <div className="tb">
-        <div className="tb-inner">
-          <div className="tb-left">
-            <div className="tb-item"><span className="tb-stars">★ ★ ★ ★ ★</span></div>
-            <div className="tb-sep" />
-            <div className="tb-item">📞 Reservations: +91 1800-RAINTECH</div>
-            <div className="tb-item">📍 Bengaluru, Karnataka, India</div>
-          </div>
-          <div className="tb-right">
-            <div className="tb-item">✓ Best Rate Guarantee</div>
-            <div className="tb-sep" />
-            <div className="tb-item" style={{ color: '#c9943a', fontWeight: 700 }}>INR ₹</div>
-          </div>
-        </div>
-      </div>
-
       {/* Navbar */}
       <nav className="nav">
         <div className="nav-inner">
