@@ -1,103 +1,77 @@
 import React, { useState, useEffect } from 'react';
-import { Hotel, Phone, MapPin, ShieldCheck, X } from 'lucide-react';
 
 export const Header: React.FC = () => {
-  const [menuOpen, setMenuOpen] = useState(false);
+  const [open, setOpen] = useState(false);
 
-  // Close menu on resize back to desktop
   useEffect(() => {
-    const handler = () => { if (window.innerWidth > 768) setMenuOpen(false); };
-    window.addEventListener('resize', handler);
-    return () => window.removeEventListener('resize', handler);
+    const onResize = () => { if (window.innerWidth > 768) setOpen(false); };
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
   }, []);
+  useEffect(() => { document.body.style.overflow = open ? 'hidden' : ''; return () => { document.body.style.overflow = ''; }; }, [open]);
 
-  // Prevent body scroll when menu open
-  useEffect(() => {
-    document.body.style.overflow = menuOpen ? 'hidden' : '';
-    return () => { document.body.style.overflow = ''; };
-  }, [menuOpen]);
+  const close = () => setOpen(false);
 
   return (
     <>
-      {/* ── Utility bar ── */}
-      <div className="topbar">
-        <div className="topbar__inner">
-          <div className="topbar__group">
-            <div className="topbar__item">
-              <span className="topbar__stars">★ ★ ★ ★ ★</span>
-            </div>
-            <div className="topbar__sep" />
-            <div className="topbar__item">
-              <Phone size={11} />
-              <span>Reservations: +91 1800-RAINTECH</span>
-            </div>
-            <div className="topbar__item">
-              <MapPin size={11} />
-              <span>Bengaluru, Karnataka, India</span>
-            </div>
+      {/* Utility bar */}
+      <div className="tb">
+        <div className="tb-inner">
+          <div className="tb-left">
+            <div className="tb-item"><span className="tb-stars">★ ★ ★ ★ ★</span></div>
+            <div className="tb-sep" />
+            <div className="tb-item">📞 Reservations: +91 1800-RAINTECH</div>
+            <div className="tb-item">📍 Bengaluru, Karnataka, India</div>
           </div>
-          <div className="topbar__group">
-            <div className="topbar__item">
-              <ShieldCheck size={11} />
-              <span>Best Rate Guarantee</span>
-            </div>
-            <div className="topbar__sep" />
-            <span className="topbar__currency">INR ₹</span>
+          <div className="tb-right">
+            <div className="tb-item">✓ Best Rate Guarantee</div>
+            <div className="tb-sep" />
+            <div className="tb-item" style={{ color: '#c9943a', fontWeight: 700 }}>INR ₹</div>
           </div>
         </div>
       </div>
 
-      {/* ── Navbar ── */}
-      <nav className={`nav${menuOpen ? ' nav--open' : ''}`}>
-        <div className="nav__inner">
-          <a href="#" className="nav__brand" onClick={() => setMenuOpen(false)}>
-            <div className="nav__crest"><Hotel size={22} /></div>
+      {/* Navbar */}
+      <nav className="nav">
+        <div className="nav-inner">
+          <a href="#" className="nav-brand" onClick={close}>
+            <div className="nav-logo">🏨</div>
             <div>
-              <div className="nav__name">Raintech Hotels</div>
-              <div className="nav__tagline">Hotels & Luxury Resorts</div>
+              <div className="nav-name">Raintech Hotels</div>
+              <div className="nav-sub">Hotels & Luxury Resorts</div>
             </div>
           </a>
 
-          {/* Desktop nav + Mobile overlay nav */}
-          <div className="nav__links">
-            <a href="#" className="nav__link active" onClick={() => setMenuOpen(false)}>Accommodations</a>
-            <a href="#" className="nav__link" onClick={() => setMenuOpen(false)}>Dining & Spa</a>
-            <a href="#" className="nav__link" onClick={() => setMenuOpen(false)}>Amenities</a>
-            <a href="#" className="nav__link" onClick={() => setMenuOpen(false)}>Location</a>
-            <a href="#" className="nav__link" onClick={() => setMenuOpen(false)}>Offers</a>
+          <div className="nav-links">
+            <a href="#" className="nav-link active" onClick={close}>Accommodations</a>
+            <a href="#" className="nav-link" onClick={close}>Dining & Spa</a>
+            <a href="#" className="nav-link" onClick={close}>Amenities</a>
+            <a href="#" className="nav-link" onClick={close}>Location</a>
+            <a href="#" className="nav-link" onClick={close}>Offers</a>
           </div>
 
-          {/* Hamburger toggle */}
           <button
-            className={`hamburger${menuOpen ? ' hamburger--open' : ''}`}
-            onClick={() => setMenuOpen(v => !v)}
-            aria-label={menuOpen ? 'Close menu' : 'Open menu'}
-            aria-expanded={menuOpen}
+            className={`nav-hamburger${open ? ' open' : ''}`}
+            onClick={() => setOpen(v => !v)}
+            aria-label="Toggle menu"
           >
-            {menuOpen
-              ? <X size={20} color="var(--text-primary)" />
-              : <>
-                  <span className="hamburger__line" />
-                  <span className="hamburger__line" />
-                  <span className="hamburger__line" />
-                </>
-            }
+            <span /><span /><span />
           </button>
 
-          <button className="nav__cta">Member Login</button>
+          <button className="nav-cta">Member Login</button>
+        </div>
+
+        {/* Mobile panel */}
+        <div className={`nav-panel${open ? ' open' : ''}`}>
+          <a href="#" className="nav-link active" onClick={close}>Accommodations</a>
+          <a href="#" className="nav-link" onClick={close}>Dining & Spa</a>
+          <a href="#" className="nav-link" onClick={close}>Amenities</a>
+          <a href="#" className="nav-link" onClick={close}>Location</a>
+          <a href="#" className="nav-link" onClick={close}>Offers</a>
         </div>
       </nav>
 
-      {/* Overlay backdrop (mobile only) */}
-      {menuOpen && (
-        <div
-          style={{
-            position: 'fixed', inset: 0, background: 'rgba(15,15,26,.4)',
-            zIndex: 98, backdropFilter: 'blur(2px)',
-          }}
-          onClick={() => setMenuOpen(false)}
-        />
-      )}
+      {open && <div className="nav-overlay" onClick={close} />}
     </>
   );
 };
