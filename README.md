@@ -59,7 +59,6 @@ src/
 │   ├── Footer.tsx
 │   ├── Header.tsx
 │   ├── Hero.tsx
-│   ├── HotelShowcase.tsx
 │   ├── Logo.tsx
 │   └── RoomCard.tsx
 ├── types/
