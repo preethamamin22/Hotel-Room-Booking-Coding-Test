@@ -3,79 +3,87 @@ import { Room } from '../types/booking';
 import { formatCurrency } from '../utils/bookingLogic';
 
 interface Props {
-  room: Room; isSelected: boolean;
-  onSelect: (c: string) => void;
-  isAvailable: boolean; filterGuests: number;
+  room: Room;
+  isSelected: boolean;
+  onSelect: (code: string) => void;
+  isAvailable: boolean;
+  filterGuests: number;
+  nights?: number;
 }
 
-export const RoomCard: React.FC<Props> = ({ room, isSelected, onSelect, isAvailable, filterGuests }) => {
-  const overCap = filterGuests > room.maxGuests;
-  const ok = isAvailable && !overCap;
+export const RoomCard: React.FC<Props> = ({
+  room,
+  isSelected,
+  onSelect,
+  isAvailable,
+  filterGuests,
+  nights = 1,
+}) => {
+  const exceedsCapacity = filterGuests > room.maxGuests;
+  const stayNights = Math.max(1, nights);
+  const stayTotal = room.pricePerNight * stayNights;
 
   return (
     <article
-      className={`rcard${isSelected ? ' selected' : ''}${!ok ? ' dimmed' : ''}`}
-      onClick={() => ok && onSelect(room.code)}
-      id={`room-${room.code}`}
-      tabIndex={ok ? 0 : -1}
-      role="button"
-      onKeyDown={e => e.key === 'Enter' && ok && onSelect(room.code)}
-      aria-pressed={isSelected}
+      className={`rcard${isSelected ? ' selected' : ''}${!isAvailable ? ' sold-out' : ''}`}
+      aria-label={`${room.type} details`}
     >
-      {/* Photo */}
-      <div className="rcard-photo">
-        <img src={room.image} alt={room.type} className="rcard-img" loading="lazy" />
-        <div className="rcard-code">{room.code}</div>
-        {isSelected && <div className="rcard-sel-tag">✓ Selected</div>}
-        {!isAvailable && (
-          <div className="rcard-sold-layer">
-            <div className="rcard-sold-box">
-              <div style={{ fontSize: '1.5rem' }}>🔒</div>
-              <div className="rcard-sold-lbl">Unavailable for Dates</div>
-            </div>
-          </div>
-        )}
+      <div className="rcard-photo-wrap">
+        <img src={room.image} alt={room.type} className="rcard-photo" />
+        <span className="rcard-code-tag">{room.code}</span>
       </div>
 
-      {/* Content */}
       <div className="rcard-body">
         <div className="rcard-top">
           <div>
-            <div className="rcard-type">{room.type}</div>
-            <h3 className="rcard-name">{room.code} — {room.type}</h3>
+            <h3 className="rcard-name">{room.type}</h3>
+            <div style={{ fontSize: '.76rem', color: 'var(--muted)', marginTop: 2 }}>
+              Max {room.maxGuests} Guests · Palace Road Suite
+            </div>
           </div>
+
           <div className="rcard-price-box">
-            <div className="rcard-price">{formatCurrency(room.pricePerNight)}</div>
-            <div className="rcard-per">per night, incl. taxes</div>
+            <div className="rcard-price">{formatCurrency(stayTotal)}</div>
+            <div className="rcard-per">
+              {stayNights > 1 ? `for ${stayNights} nights (${formatCurrency(room.pricePerNight)}/night)` : 'per night'}
+            </div>
           </div>
         </div>
 
         <p className="rcard-desc">{room.description}</p>
 
-        <div className="rcard-specs">
-          <div className="rcard-spec">👥 Up to {room.maxGuests} Guests</div>
-          {overCap && <div className="rcard-spec warn">⚠ Too small for {filterGuests} guests</div>}
+        <div className="rcard-amenities">
+          {room.amenities.map(amenity => (
+            <span key={amenity} className="rcard-chip">✓ {amenity}</span>
+          ))}
         </div>
 
-        <div className="rcard-tags">
-          {room.amenities.map((a, i) => <span key={i} className="rtag">{a}</span>)}
-        </div>
+        {exceedsCapacity && (
+          <div style={{ color: 'var(--red)', fontSize: '.76rem', fontWeight: 600 }}>
+            ⚠ Party size ({filterGuests} guests) exceeds room capacity of {room.maxGuests}.
+          </div>
+        )}
 
         <div className="rcard-foot">
-          {!isAvailable
-            ? <span className="rcard-status sold">⚠ Sold Out</span>
-            : overCap
-            ? <span className="rcard-status cap">⚠ Room Too Small</span>
-            : <span className="rcard-status ok">✓ Available</span>
-          }
-          <button
-            type="button"
-            className={`btn-sel ${isSelected ? 'done' : 'idle'}`}
-            disabled={!ok}
-            onClick={e => { e.stopPropagation(); if (ok) onSelect(room.code); }}
-          >
-            {isSelected ? '✓ Selected' : 'Select Room'}
-          </button>
+          <div className="rcard-choices">
+            <span>✓ Free Cancellation up to 24h prior to check-in</span>
+            <span>✓ Complimentary Gourmet Breakfast & High Tea</span>
+          </div>
+
+          <div>
+            {!isAvailable ? (
+              <span className="badge-sold">Booked for selected dates</span>
+            ) : (
+              <button
+                type="button"
+                className={`btn-sel${isSelected ? ' selected' : ''}`}
+                disabled={exceedsCapacity}
+                onClick={() => onSelect(room.code)}
+              >
+                {isSelected ? 'Selected ✓' : 'Select Room'}
+              </button>
+            )}
+          </div>
         </div>
       </div>
     </article>

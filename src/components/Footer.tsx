@@ -1,50 +1,59 @@
 import React from 'react';
+import { Logo } from './Logo';
 
 export const Footer: React.FC = () => {
   return (
-    <footer className="b-footer">
-      <div className="b-footer-inner">
-        <div className="b-footer-links-grid">
-          <div>
-            <div className="b-footer-col-head">Destinations</div>
-            <a href="#" className="b-footer-link">Bengaluru Hotels</a>
-            <a href="#" className="b-footer-link">Karnataka Resorts</a>
-            <a href="#" className="b-footer-link">India Luxury Stays</a>
-            <a href="#" className="b-footer-link">Palace Road Suites</a>
-            <a href="#" className="b-footer-link">Places of Interest</a>
+    <footer className="footer">
+      <div className="footer-grid">
+        {/* Column 1: Brand & Contact Info */}
+        <div className="footer-brand-col">
+          <div className="footer-logo-row">
+            <Logo size={32} />
+            <div>
+              <div className="footer-name">Raintech Hotels</div>
+              <div className="footer-sub">Luxury Resorts & Suites</div>
+            </div>
           </div>
-
-          <div>
-            <div className="b-footer-col-head">Accommodation Types</div>
-            <a href="#" className="b-footer-link">Deluxe King Rooms</a>
-            <a href="#" className="b-footer-link">Executive Penthouse Suites</a>
-            <a href="#" className="b-footer-link">Family Double Rooms</a>
-            <a href="#" className="b-footer-link">Serviced Apartments</a>
-            <a href="#" className="b-footer-link">Boutique Villas</a>
-          </div>
-
-          <div>
-            <div className="b-footer-col-head">Travel Services</div>
-            <a href="#" className="b-footer-link">Car Rentals & Transfers</a>
-            <a href="#" className="b-footer-link">Airport Taxis</a>
-            <a href="#" className="b-footer-link">Fine Dining Reservations</a>
-            <a href="#" className="b-footer-link">Corporate Travel Portal</a>
-            <a href="#" className="b-footer-link">Raintech for Travel Agents</a>
-          </div>
-
-          <div>
-            <div className="b-footer-col-head">Help & Support</div>
-            <a href="#" className="b-footer-link">Customer Service Help</a>
-            <a href="#" className="b-footer-link">Free Cancellation Policy</a>
-            <a href="#" className="b-footer-link">Best Price Guarantee</a>
-            <a href="#" className="b-footer-link">Safety Resource Centre</a>
-            <a href="#" className="b-footer-link">Privacy & Cookies Statement</a>
+          <p className="footer-desc">
+            Five-star luxury properties delivering timeless hospitality and bespoke stays across premier destinations.
+          </p>
+          <div className="footer-contact">
+            <span>reservations@raintech.in</span>
+            <span className="footer-dot">•</span>
+            <span>+91 1800-RAINTECH</span>
+            <span className="footer-dot">•</span>
+            <span>Bengaluru, India</span>
           </div>
         </div>
 
-        <div className="b-footer-bar">
-          <div>© 2026 Raintech.com™. All rights reserved.</div>
-          <div>Raintech.com is part of Raintech Hospitality Network, leader in hotel booking and accommodation technology.</div>
+        {/* Column 2: Accommodations & Services */}
+        <div className="footer-links-col">
+          <div className="footer-link-group">
+            <div className="footer-col-title">Accommodations</div>
+            <div className="footer-links">
+              {['Deluxe King Room', 'Executive Suite', 'Ocean Breeze Suite', 'Presidential Suite'].map(l => (
+                <a key={l} href="#" className="footer-link">{l}</a>
+              ))}
+            </div>
+          </div>
+
+          <div className="footer-link-group">
+            <div className="footer-col-title">Hotel Services</div>
+            <div className="footer-links">
+              {['Fine Dining & Lounge', 'Ayurvedic Spa & Wellness', 'Special Offers', 'Privacy & Terms'].map(l => (
+                <a key={l} href="#" className="footer-link">{l}</a>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="footer-bar">
+        <span className="footer-copy">© 2026 Raintech Hotels & Resorts Pvt. Ltd. All rights reserved.</span>
+        <div className="footer-legal">
+          <a href="#">Privacy</a>
+          <a href="#">Terms</a>
+          <a href="#">Cookies</a>
         </div>
       </div>
     </footer>

@@ -60,7 +60,8 @@ src/
 │   ├── Header.tsx
 │   ├── Hero.tsx
 │   ├── HotelShowcase.tsx
-│   └── RoomsTable.tsx
+│   ├── Logo.tsx
+│   └── RoomCard.tsx
 ├── types/
 │   └── booking.ts
 ├── utils/

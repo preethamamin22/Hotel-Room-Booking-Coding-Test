@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Room, BookingCalculation, GuestDetails } from '../types/booking';
+import { Room, DateValidationResult, BookingCalculation, GuestDetails } from '../types/booking';
 import { formatCurrency } from '../utils/bookingLogic';
 
 interface Props {
@@ -8,8 +8,10 @@ interface Props {
   checkOut: string;
   adults: number;
   childrenCount: number;
+  validation: DateValidationResult;
   calculation: BookingCalculation;
-  onClearSelection: () => void;
+  isRoomAvailable: boolean;
+  onClearSelection?: () => void;
 }
 
 export const BookingSummary: React.FC<Props> = ({
@@ -18,361 +20,315 @@ export const BookingSummary: React.FC<Props> = ({
   checkOut,
   adults,
   childrenCount,
+  validation,
   calculation,
+  isRoomAvailable,
   onClearSelection,
 }) => {
-  const [modalOpen, setModalOpen] = useState(false);
-  const [confirmedData, setConfirmedData] = useState<{
-    bookingNumber: string;
-    pin: string;
+  const [step, setStep] = useState<'review' | 'details'>('review');
+  const [confirmedBooking, setConfirmedBooking] = useState<{
+    id: string;
     guest: GuestDetails;
   } | null>(null);
 
-  // Form fields
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
+  // Guest details form state
+  const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
-  const [isMainGuest, setIsMainGuest] = useState(true);
-  const [travelForWork, setTravelForWork] = useState(false);
-  const [specialRequests, setSpecialRequests] = useState('');
-  const [error, setError] = useState('');
+  const [specialReq, setSpecialReq] = useState('');
+  const [formError, setFormError] = useState('');
 
-  if (!selectedRoom) return null;
+  const totalGuests = adults + childrenCount;
 
-  const handleCompleteBooking = (e: React.FormEvent) => {
+  const fmt = (s: string) => s
+    ? new Date(s + 'T00:00:00').toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' })
+    : 'Not selected';
+
+  const canProceed = !!selectedRoom && !!checkIn && !!checkOut &&
+    validation.isValid && calculation.nights > 0 &&
+    isRoomAvailable && totalGuests <= (selectedRoom?.maxGuests ?? 0);
+
+  const handleSubmitGuestDetails = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!firstName.trim() || !lastName.trim()) {
-      setError('Please enter both your first name and last name.');
+    if (!fullName.trim()) {
+      setFormError('Please enter your full name');
       return;
     }
     if (!email.trim() || !email.includes('@')) {
-      setError('Please enter a valid email address.');
+      setFormError('Please enter a valid email address');
       return;
     }
     if (!phone.trim() || phone.length < 7) {
-      setError('Please enter a valid mobile phone number.');
+      setFormError('Please enter a valid mobile phone number');
       return;
     }
 
-    setError('');
-    const randomBookingNum = `${Math.floor(1000 + Math.random() * 9000)}.${Math.floor(100 + Math.random() * 900)}.${Math.floor(100 + Math.random() * 900)}`;
-    const randomPin = `${Math.floor(1000 + Math.random() * 9000)}`;
-
-    setConfirmedData({
-      bookingNumber: randomBookingNum,
-      pin: randomPin,
+    setFormError('');
+    const randomId = `RT-${Math.floor(100000 + Math.random() * 900000)}`;
+    setConfirmedBooking({
+      id: randomId,
       guest: {
-        fullName: `${firstName.trim()} ${lastName.trim()}`,
+        fullName: fullName.trim(),
         email: email.trim(),
         phone: phone.trim(),
         adults,
         children: childrenCount,
-        specialRequests: specialRequests.trim(),
+        specialRequests: specialReq.trim(),
       },
     });
   };
 
   const handleReset = () => {
-    setConfirmedData(null);
-    setModalOpen(false);
-    onClearSelection();
+    setConfirmedBooking(null);
+    setStep('review');
+    onClearSelection?.();
   };
 
   return (
-    <>
-      {/* Sticky Booking Drawer (Booking.com style) */}
-      {!confirmedData && (
-        <div className="b-drawer">
-          <div className="b-drawer-inner">
-            <div className="b-drawer-info">
-              <div>
-                <div className="b-drawer-room">
-                  {selectedRoom.type} ({selectedRoom.code})
-                </div>
-                <div className="b-drawer-sub">
-                  {checkIn} to {checkOut} · {calculation.nights} night{calculation.nights > 1 ? 's' : ''} · {adults} adult{adults > 1 ? 's' : ''}{childrenCount > 0 ? `, ${childrenCount} child` : ''} · Free cancellation
-                </div>
+    <aside className="folio" aria-label="Reservation folio">
+      <div className="folio-head">
+        <span style={{ fontSize: '1rem' }}>🧾</span>
+        <span className="folio-head-title">
+          {confirmedBooking ? 'Reservation Confirmed' : step === 'details' ? 'Guest Information' : 'Reservation Folio'}
+        </span>
+      </div>
+
+      <div className="folio-body">
+        {confirmedBooking ? (
+          /* Booking.com Confirmation Voucher */
+          <div className="folio-confirmed">
+            <div className="folio-ok-badge">
+              <span>✓</span>
+              <span>Booking Confirmed</span>
+            </div>
+
+            <div className="folio-ref-box">
+              <span className="folio-ref-lbl">Booking Reference</span>
+              <span className="folio-ref-id">{confirmedBooking.id}</span>
+            </div>
+
+            <p style={{ fontSize: '.82rem', color: 'var(--body)', margin: '4px 0' }}>
+              Confirmation details sent to <strong>{confirmedBooking.guest.email}</strong>
+            </p>
+
+            <div className="folio-receipt">
+              <div className="rc-row">
+                <span className="rc-lbl">Guest Name</span>
+                <strong>{confirmedBooking.guest.fullName}</strong>
               </div>
-            </div>
-
-            <div style={{ display: 'flex', alignItems: 'center', gap: 24 }}>
-              <div className="b-drawer-total">
-                <div className="b-drawer-price">{formatCurrency(calculation.totalPrice)}</div>
-                <div style={{ fontSize: '.74rem', color: 'var(--b-text-muted)' }}>Includes taxes & charges</div>
+              <div className="rc-row">
+                <span className="rc-lbl">Phone</span>
+                <span>{confirmedBooking.guest.phone}</span>
               </div>
-
-              <button
-                type="button"
-                className="b-drawer-btn"
-                onClick={() => setModalOpen(true)}
-              >
-                I'll reserve &gt;
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Booking.com Guest Details Checkout Modal */}
-      {modalOpen && !confirmedData && (
-        <div className="b-modal-overlay">
-          <div className="b-modal">
-            <div className="b-modal-head">
-              <div className="b-modal-title">Enter your details</div>
-              <button
-                type="button"
-                className="b-modal-close"
-                onClick={() => setModalOpen(false)}
-              >
-                ✕
-              </button>
-            </div>
-
-            <form onSubmit={handleCompleteBooking}>
-              <div className="b-modal-body">
-                {/* Stay Summary Card */}
-                <div className="b-checkout-summary">
-                  <div>
-                    <div className="b-cs-room">Raintech Grand Stays — {selectedRoom.type}</div>
-                    <div className="b-cs-dates">
-                      {checkIn} to {checkOut} ({calculation.nights} night{calculation.nights > 1 ? 's' : ''}) · {adults} Adult{adults > 1 ? 's' : ''}{childrenCount > 0 ? `, ${childrenCount} Child` : ''}
-                    </div>
-                  </div>
-                  <div className="b-cs-price">{formatCurrency(calculation.totalPrice)}</div>
-                </div>
-
-                {error && (
-                  <div style={{
-                    background: 'var(--b-red-bg)', color: 'var(--b-red)', padding: '10px 14px',
-                    borderRadius: 4, marginBottom: 16, fontSize: '.84rem', fontWeight: 600,
-                  }}>
-                    ⚠ {error}
-                  </div>
-                )}
-
-                {/* Name Fields */}
-                <div className="b-form-grid">
-                  <div className="b-form-field">
-                    <label htmlFor="fn" className="b-form-label">First Name *</label>
-                    <input
-                      id="fn"
-                      type="text"
-                      className="b-form-inp"
-                      placeholder="e.g. Preetham"
-                      value={firstName}
-                      onChange={e => setFirstName(e.target.value)}
-                      required
-                    />
-                  </div>
-
-                  <div className="b-form-field">
-                    <label htmlFor="ln" className="b-form-label">Last Name *</label>
-                    <input
-                      id="ln"
-                      type="text"
-                      className="b-form-inp"
-                      placeholder="e.g. Amin"
-                      value={lastName}
-                      onChange={e => setLastName(e.target.value)}
-                      required
-                    />
-                  </div>
-                </div>
-
-                {/* Contact Fields */}
-                <div className="b-form-grid">
-                  <div className="b-form-field">
-                    <label htmlFor="em" className="b-form-label">Email Address *</label>
-                    <input
-                      id="em"
-                      type="email"
-                      className="b-form-inp"
-                      placeholder="name@example.com"
-                      value={email}
-                      onChange={e => setEmail(e.target.value)}
-                      required
-                    />
-                    <span style={{ fontSize: '.72rem', color: 'var(--b-text-muted)' }}>
-                      Confirmation email will be sent here
-                    </span>
-                  </div>
-
-                  <div className="b-form-field">
-                    <label htmlFor="ph" className="b-form-label">Mobile Phone *</label>
-                    <input
-                      id="ph"
-                      type="tel"
-                      className="b-form-inp"
-                      placeholder="+91 98765 43210"
-                      value={phone}
-                      onChange={e => setPhone(e.target.value)}
-                      required
-                    />
-                    <span style={{ fontSize: '.72rem', color: 'var(--b-text-muted)' }}>
-                      Needed by the property for your arrival
-                    </span>
-                  </div>
-                </div>
-
-                {/* Who are you booking for? */}
-                <div className="b-form-field full" style={{ marginTop: 10 }}>
-                  <span className="b-form-label">Who are you booking for?</span>
-                  <div className="b-form-radio-row">
-                    <label>
-                      <input
-                        type="radio"
-                        name="mainGuest"
-                        checked={isMainGuest}
-                        onChange={() => setIsMainGuest(true)}
-                      />
-                      I am the main guest
-                    </label>
-                    <label>
-                      <input
-                        type="radio"
-                        name="mainGuest"
-                        checked={!isMainGuest}
-                        onChange={() => setIsMainGuest(false)}
-                      />
-                      Booking for someone else
-                    </label>
-                  </div>
-                </div>
-
-                {/* Traveling for work? */}
-                <div className="b-form-field full">
-                  <span className="b-form-label">Are you traveling for work?</span>
-                  <div className="b-form-radio-row">
-                    <label>
-                      <input
-                        type="radio"
-                        name="work"
-                        checked={travelForWork}
-                        onChange={() => setTravelForWork(true)}
-                      />
-                      Yes
-                    </label>
-                    <label>
-                      <input
-                        type="radio"
-                        name="work"
-                        checked={!travelForWork}
-                        onChange={() => setTravelForWork(false)}
-                      />
-                      No
-                    </label>
-                  </div>
-                </div>
-
-                {/* Special Requests */}
-                <div className="b-form-field full">
-                  <label htmlFor="req" className="b-form-label">Special requests</label>
-                  <textarea
-                    id="req"
-                    className="b-form-inp"
-                    rows={2}
-                    placeholder="e.g. Quiet room, high floor, feather-free pillows..."
-                    value={specialRequests}
-                    onChange={e => setSpecialRequests(e.target.value)}
-                  />
-                  <span style={{ fontSize: '.72rem', color: 'var(--b-text-muted)' }}>
-                    Special requests cannot be guaranteed, but the property will do its best.
+              <div className="rc-row">
+                <span className="rc-lbl">Party Size</span>
+                <span>{adults} Adult{adults > 1 ? 's' : ''}{childrenCount > 0 ? `, ${childrenCount} Child${childrenCount > 1 ? 'ren' : ''}` : ''}</span>
+              </div>
+              <div className="rc-sep" />
+              <div className="rc-row">
+                <span className="rc-lbl">Accommodation</span>
+                <strong>{selectedRoom?.type} ({selectedRoom?.code})</strong>
+              </div>
+              <div className="rc-row">
+                <span className="rc-lbl">Stay Dates</span>
+                <span>{checkIn} to {checkOut}</span>
+              </div>
+              <div className="rc-row">
+                <span className="rc-lbl">Duration</span>
+                <span>{calculation.nights} Night{calculation.nights > 1 ? 's' : ''}</span>
+              </div>
+              {confirmedBooking.guest.specialRequests && (
+                <div className="rc-row">
+                  <span className="rc-lbl">Special Request</span>
+                  <span style={{ fontStyle: 'italic', maxWidth: 160, textAlign: 'right' }}>
+                    {confirmedBooking.guest.specialRequests}
                   </span>
                 </div>
-              </div>
-
-              <div className="b-modal-foot">
-                <span style={{ fontSize: '.84rem', color: 'var(--b-green)', fontWeight: 700 }}>
-                  ✓ Free cancellation · No prepayment needed
-                </span>
-                <button type="submit" className="b-btn-complete">
-                  Complete booking
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-
-      {/* Booking.com Confirmation Voucher Modal */}
-      {confirmedData && (
-        <div className="b-modal-overlay">
-          <div className="b-conf-card">
-            <div className="b-conf-header">
-              <div className="b-conf-check">✓</div>
-              <h2 className="b-conf-title">Your booking is confirmed!</h2>
-              <p className="b-conf-sub">We have sent a confirmation email to <strong>{confirmedData.guest.email}</strong></p>
-
-              <div className="b-conf-pin-box">
-                <div>
-                  <div className="b-conf-item-lbl">Confirmation #</div>
-                  <div className="b-conf-item-val">{confirmedData.bookingNumber}</div>
-                </div>
-                <div>
-                  <div className="b-conf-item-lbl">PIN Code</div>
-                  <div className="b-conf-item-val">{confirmedData.pin}</div>
-                </div>
+              )}
+              <div className="rc-sep" />
+              <div className="rc-row" style={{ fontSize: '.95rem', fontWeight: 700 }}>
+                <span>Total Stay Cost</span>
+                <span style={{ color: 'var(--ink)' }}>{formatCurrency(calculation.totalPrice)}</span>
               </div>
             </div>
 
-            <div className="b-conf-body">
-              <div className="b-conf-row">
-                <span style={{ color: 'var(--b-text-muted)' }}>Property</span>
-                <strong>Raintech Grand Stays & Suites</strong>
+            <div className="folio-actions">
+              <button type="button" className="folio-btn-sec" onClick={() => window.print()}>
+                ⎙ Print Voucher
+              </button>
+              <button type="button" className="folio-btn-sec" onClick={handleReset}>
+                Modify / New Booking
+              </button>
+            </div>
+          </div>
+        ) : step === 'details' ? (
+          /* Step 2: Guest Details Form (Booking.com style) */
+          <form className="folio-form" onSubmit={handleSubmitGuestDetails}>
+            <div style={{
+              fontSize: '.68rem', fontWeight: 700, textTransform: 'uppercase',
+              color: 'var(--gold)', background: 'var(--gold-bg)', padding: '4px 8px',
+              borderRadius: 4, alignSelf: 'flex-start'
+            }}>
+              Step 2 of 2 · Guest Details
+            </div>
+
+            {formError && (
+              <div style={{ color: 'var(--red)', fontSize: '.78rem', fontWeight: 600 }}>
+                ⚠ {formError}
               </div>
-              <div className="b-conf-row">
-                <span style={{ color: 'var(--b-text-muted)' }}>Accommodation</span>
-                <strong>{selectedRoom.type} ({selectedRoom.code})</strong>
+            )}
+
+            <div className="folio-field">
+              <label htmlFor="fn" className="folio-lbl">Full Name *</label>
+              <input
+                id="fn"
+                type="text"
+                className="folio-inp"
+                placeholder="e.g. Preetham Amin"
+                value={fullName}
+                onChange={e => setFullName(e.target.value)}
+                required
+              />
+            </div>
+
+            <div className="folio-field">
+              <label htmlFor="em" className="folio-lbl">Email Address *</label>
+              <input
+                id="em"
+                type="email"
+                className="folio-inp"
+                placeholder="name@example.com"
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+                required
+              />
+            </div>
+
+            <div className="folio-field">
+              <label htmlFor="ph" className="folio-lbl">Mobile Phone *</label>
+              <input
+                id="ph"
+                type="tel"
+                className="folio-inp"
+                placeholder="+91 98765 43210"
+                value={phone}
+                onChange={e => setPhone(e.target.value)}
+                required
+              />
+            </div>
+
+            <div className="folio-field">
+              <label htmlFor="sr" className="folio-lbl">Special Requests (Optional)</label>
+              <textarea
+                id="sr"
+                className="folio-inp folio-txt"
+                rows={2}
+                placeholder="e.g. Quiet room, high floor, feather-free pillows..."
+                value={specialReq}
+                onChange={e => setSpecialReq(e.target.value)}
+              />
+            </div>
+
+            <div style={{ display: 'flex', gap: 8, marginTop: 4 }}>
+              <button
+                type="button"
+                className="folio-btn-sec"
+                onClick={() => setStep('review')}
+              >
+                ← Back
+              </button>
+              <button
+                type="submit"
+                className="folio-cta"
+                style={{ flex: 2 }}
+              >
+                Complete Reservation
+              </button>
+            </div>
+          </form>
+        ) : (
+          /* Step 1: Accommodation, Dates & Price Review */
+          <>
+            {/* Selected Room */}
+            <div className="folio-grp">
+              <div className="folio-lbl">Selected Accommodation</div>
+              <div className="folio-box">
+                {selectedRoom ? (
+                  <>
+                    <div className="folio-room-name">{selectedRoom.type} ({selectedRoom.code})</div>
+                    <div className="folio-room-rate">{formatCurrency(selectedRoom.pricePerNight)} / night</div>
+                  </>
+                ) : (
+                  <span style={{ fontSize: '.8rem', color: 'var(--muted)' }}>
+                    ← Choose an available room from the list
+                  </span>
+                )}
               </div>
-              <div className="b-conf-row">
-                <span style={{ color: 'var(--b-text-muted)' }}>Lead Guest</span>
-                <strong>{confirmedData.guest.fullName}</strong>
+            </div>
+
+            {/* Stay Dates */}
+            <div className="folio-grp">
+              <div className="folio-lbl">Stay Duration & Party</div>
+              <div className="folio-dates">
+                <div className="folio-dc">
+                  <span className="folio-dc-cap">Check-in</span>
+                  <span className="folio-dc-val">{fmt(checkIn)}</span>
+                </div>
+                <span className="folio-arrow">→</span>
+                <div className="folio-dc" style={{ textAlign: 'right' }}>
+                  <span className="folio-dc-cap">Check-out</span>
+                  <span className="folio-dc-val">{fmt(checkOut)}</span>
+                </div>
               </div>
-              <div className="b-conf-row">
-                <span style={{ color: 'var(--b-text-muted)' }}>Check-in</span>
-                <span>{checkIn} (from 14:00)</span>
-              </div>
-              <div className="b-conf-row">
-                <span style={{ color: 'var(--b-text-muted)' }}>Check-out</span>
-                <span>{checkOut} (until 12:00)</span>
-              </div>
-              <div className="b-conf-row">
-                <span style={{ color: 'var(--b-text-muted)' }}>Stay Length</span>
-                <span>{calculation.nights} Night{calculation.nights > 1 ? 's' : ''} · {adults} Adult{adults > 1 ? 's' : ''}{childrenCount > 0 ? `, ${childrenCount} Child` : ''}</span>
-              </div>
-              {confirmedData.guest.specialRequests && (
-                <div className="b-conf-row">
-                  <span style={{ color: 'var(--b-text-muted)' }}>Special Requests</span>
-                  <span style={{ fontStyle: 'italic' }}>{confirmedData.guest.specialRequests}</span>
+              {calculation.nights > 0 && validation.isValid && (
+                <div className="folio-nights">
+                  🌙 {calculation.nights} {calculation.nights === 1 ? 'Night' : 'Nights'} · {adults} Adult{adults > 1 ? 's' : ''}{childrenCount > 0 ? `, ${childrenCount} Child${childrenCount > 1 ? 'ren' : ''}` : ''}
                 </div>
               )}
-              <div className="b-conf-row total">
-                <span>Total Amount Paid</span>
-                <span style={{ color: 'var(--b-accent)' }}>{formatCurrency(calculation.totalPrice)}</span>
-              </div>
             </div>
 
-            <div className="b-conf-actions">
-              <button
-                type="button"
-                className="b-nav-pill"
-                style={{ background: '#fff', color: '#1a1a1a', border: '1px solid #ccc' }}
-                onClick={() => window.print()}
-              >
-                ⎙ Print voucher
-              </button>
-              <button
-                type="button"
-                className="b-btn-complete"
-                onClick={handleReset}
-              >
-                Done / Make another booking
-              </button>
+            {/* Price Breakdown */}
+            <div className="folio-price">
+              <div className="folio-price-head">Price Calculation</div>
+              {selectedRoom && calculation.nights > 0 && validation.isValid ? (
+                <>
+                  <div className="prow">
+                    <span>Room Rate</span>
+                    <span>{formatCurrency(selectedRoom.pricePerNight)} / night</span>
+                  </div>
+                  <div className="prow">
+                    <span>Duration</span>
+                    <span>× {calculation.nights} {calculation.nights === 1 ? 'night' : 'nights'}</span>
+                  </div>
+                  <div className="prow">
+                    <span>Taxes & Fees</span>
+                    <span style={{ color: 'var(--green)' }}>Included</span>
+                  </div>
+                  <div className="pdiv" />
+                  <div className="prow total">
+                    <span>Total Amount</span>
+                    <span className="price-total">{formatCurrency(calculation.totalPrice)}</span>
+                  </div>
+                </>
+              ) : (
+                <div style={{ fontSize: '.8rem', color: 'var(--muted)', textAlign: 'center', padding: '4px 0' }}>
+                  Select dates and a room to calculate total rate
+                </div>
+              )}
             </div>
-          </div>
-        </div>
-      )}
-    </>
+
+            {/* Booking action button */}
+            <button
+              type="button"
+              className="folio-cta"
+              disabled={!canProceed}
+              onClick={() => canProceed && setStep('details')}
+            >
+              Enter Guest Details →
+            </button>
+          </>
+        )}
+      </div>
+    </aside>
   );
 };
