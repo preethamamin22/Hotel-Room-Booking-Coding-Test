@@ -1,5 +1,5 @@
 import React from 'react';
-import { Calendar, Users, AlertCircle, RotateCcw, Sparkles } from 'lucide-react';
+import { Calendar, Users, AlertCircle, RotateCcw } from 'lucide-react';
 import { DateValidationResult } from '../types/booking';
 
 interface Props {
@@ -27,29 +27,27 @@ export const DateGuestFilter: React.FC<Props> = ({
     onCheckOutChange(fmt(end));
   };
 
-  const handleReset = () => { onCheckInChange(''); onCheckOutChange(''); };
+  const reset = () => { onCheckInChange(''); onCheckOutChange(''); };
 
   return (
-    <div className="search-card-wrapper">
-      <div className="search-card">
-        <div className="search-card__inner">
-          <div className="search-card__header">
-            <div className="search-card__title">
-              <Sparkles size={18} className="search-card__title-icon" />
-              Plan Your Stay
-            </div>
+    <div className="search-wrap">
+      <div className="search-float">
+        <div className="search-card">
+          <div className="search-card__label">
+            <span className="search-card__label-dot" />
+            Plan Your Stay
           </div>
 
-          <div className="search-card__grid">
+          <div className="search-grid">
             {/* Check-in */}
-            <div className="field">
-              <label htmlFor="checkin" className="field__label">Check-in Date</label>
-              <div className="field__wrap">
-                <Calendar size={16} className="field__icon" />
+            <div className="sfield">
+              <label htmlFor="checkin" className="sfield__lbl">Check-in Date</label>
+              <div className="sfield__wrap">
+                <Calendar size={16} className="sfield__icon" />
                 <input
                   id="checkin"
                   type="date"
-                  className={`field__input ${validation.errorType === 'PAST_DATE' ? 'field__input--error' : ''}`}
+                  className={`sfield__input${validation.errorType === 'PAST_DATE' ? ' sfield__input--err' : ''}`}
                   value={checkIn}
                   min={minDate}
                   onChange={e => onCheckInChange(e.target.value)}
@@ -58,14 +56,14 @@ export const DateGuestFilter: React.FC<Props> = ({
             </div>
 
             {/* Check-out */}
-            <div className="field">
-              <label htmlFor="checkout" className="field__label">Check-out Date</label>
-              <div className="field__wrap">
-                <Calendar size={16} className="field__icon" />
+            <div className="sfield">
+              <label htmlFor="checkout" className="sfield__lbl">Check-out Date</label>
+              <div className="sfield__wrap">
+                <Calendar size={16} className="sfield__icon" />
                 <input
                   id="checkout"
                   type="date"
-                  className={`field__input ${validation.errorType === 'INVALID_RANGE' ? 'field__input--error' : ''}`}
+                  className={`sfield__input${validation.errorType === 'INVALID_RANGE' ? ' sfield__input--err' : ''}`}
                   value={checkOut}
                   min={checkIn || minDate}
                   onChange={e => onCheckOutChange(e.target.value)}
@@ -74,13 +72,13 @@ export const DateGuestFilter: React.FC<Props> = ({
             </div>
 
             {/* Guests */}
-            <div className="field">
-              <label htmlFor="guests" className="field__label">Guests</label>
-              <div className="field__wrap">
-                <Users size={16} className="field__icon" />
+            <div className="sfield">
+              <label htmlFor="guests" className="sfield__lbl">Guests</label>
+              <div className="sfield__wrap">
+                <Users size={16} className="sfield__icon" />
                 <select
                   id="guests"
-                  className="field__input"
+                  className="sfield__input"
                   value={guests}
                   onChange={e => onGuestsChange(Number(e.target.value))}
                 >
@@ -94,23 +92,25 @@ export const DateGuestFilter: React.FC<Props> = ({
           </div>
 
           {/* Presets */}
-          <div className="search-card__presets">
-            <span className="presets__label">Quick Select:</span>
-            {[1, 2, 3, 5, 7].map(n => (
-              <button key={n} className="preset-btn" type="button" onClick={() => applyPreset(n)}>
-                {n} {n === 1 ? 'Night' : 'Nights'}
-              </button>
-            ))}
-            {(checkIn || checkOut) && (
-              <button className="preset-btn preset-btn--clear" type="button" onClick={handleReset}>
-                <RotateCcw size={11} /> Clear
-              </button>
-            )}
+          <div className="search-bottom">
+            <div className="presets-row">
+              <span className="presets-label">Quick Stay:</span>
+              {[1, 2, 3, 5, 7].map(n => (
+                <button key={n} type="button" className="preset" onClick={() => applyPreset(n)}>
+                  {n} {n === 1 ? 'Night' : 'Nights'}
+                </button>
+              ))}
+              {(checkIn || checkOut) && (
+                <button type="button" className="preset preset--clear" onClick={reset}>
+                  <RotateCcw size={11} /> Clear
+                </button>
+              )}
+            </div>
           </div>
 
-          {/* Error */}
+          {/* Error Banner */}
           {!validation.isValid && validation.message && (
-            <div className="alert alert--error" role="alert">
+            <div className="search-alert search-alert--err" role="alert">
               <AlertCircle size={16} />
               {validation.message}
             </div>

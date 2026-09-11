@@ -13,31 +13,30 @@ import {
 } from './utils/bookingLogic';
 import { Info } from 'lucide-react';
 
-export default function App() {
-  const today = () => new Date().toISOString().split('T')[0];
-  const tomorrow = () => {
-    const d = new Date(); d.setDate(d.getDate() + 1);
-    return d.toISOString().split('T')[0];
-  };
+const todayStr = () => new Date().toISOString().split('T')[0];
+const tomorrowStr = () => {
+  const d = new Date(); d.setDate(d.getDate() + 1);
+  return d.toISOString().split('T')[0];
+};
 
-  const [checkIn, setCheckIn] = useState(today());
-  const [checkOut, setCheckOut] = useState(tomorrow());
-  const [guests, setGuests] = useState(2);
+export default function App() {
+  const [checkIn, setCheckIn]   = useState(todayStr());
+  const [checkOut, setCheckOut] = useState(tomorrowStr());
+  const [guests, setGuests]     = useState(2);
   const [selectedCode, setSelectedCode] = useState<string | null>('R101');
 
-  const validation = validateBookingDates(checkIn, checkOut);
+  const validation   = validateBookingDates(checkIn, checkOut);
   const selectedRoom = SAMPLE_ROOMS.find(r => r.code === selectedCode) ?? null;
-  const calculation = selectedRoom
+  const calculation  = selectedRoom
     ? calculateBooking(selectedRoom.pricePerNight, checkIn, checkOut)
     : { nights: 0, pricePerNight: 0, totalPrice: 0 };
-  const selectedAvailable = selectedRoom
+  const selectedAvail = selectedRoom
     ? isRoomAvailable(selectedRoom.code, checkIn, checkOut, MOCK_EXISTING_BOOKINGS)
     : true;
 
   return (
     <>
       <Header />
-
       <Hero />
 
       <DateGuestFilter
@@ -48,21 +47,19 @@ export default function App() {
         onCheckOutChange={setCheckOut}
         onGuestsChange={setGuests}
         validation={validation}
-        minDate={today()}
+        minDate={todayStr()}
       />
 
       <main className="page-body">
-        <div className="layout-grid">
-          {/* ── Rooms Column ── */}
+        <div className="layout">
+          {/* ── Rooms ── */}
           <section>
-            <div className="section-header">
-              <h2 className="section-title">Available Accommodations</h2>
-              <span className="section-meta">
-                {SAMPLE_ROOMS.length} Room Types · Bengaluru
-              </span>
+            <div className="sect-hd">
+              <h2 className="sect-title">Available Accommodations</h2>
+              <span className="sect-meta">{SAMPLE_ROOMS.length} Room Types · Bengaluru</span>
             </div>
 
-            <div className="rooms-stack">
+            <div className="rooms">
               {SAMPLE_ROOMS.map(room => (
                 <RoomCard
                   key={room.code}
@@ -75,25 +72,24 @@ export default function App() {
               ))}
             </div>
 
-            {/* Availability notice */}
-            <div className="info-notice">
-              <div className="info-notice__title">
+            <div className="avail-note">
+              <div className="avail-note__head">
                 <Info size={14} />
-                Real-time Availability Check
+                Real-time Availability
               </div>
-              <p className="info-notice__body">
-                Room availability is checked against existing reservations in real-time. Currently,{' '}
-                <strong>R101</strong> is held from days +2 to +5 and{' '}
+              <p className="avail-note__body">
+                Availability is checked against existing reservations in real time.
+                Currently <strong>R101</strong> is held from days +2 to +5, and{' '}
                 <strong>R201</strong> from days +7 to +10 from today.
-                Selecting overlapping dates will mark those rooms as sold out.
+                Choosing overlapping dates will mark those rooms as sold out.
               </p>
             </div>
           </section>
 
-          {/* ── Folio Sidebar ── */}
+          {/* ── Folio ── */}
           <section>
-            <div className="section-header">
-              <h2 className="section-title">Reservation Folio</h2>
+            <div className="sect-hd">
+              <h2 className="sect-title">Reservation Folio</h2>
             </div>
             <BookingSummary
               selectedRoom={selectedRoom}
@@ -102,7 +98,7 @@ export default function App() {
               guests={guests}
               validation={validation}
               calculation={calculation}
-              isRoomAvailable={selectedAvailable}
+              isRoomAvailable={selectedAvail}
             />
           </section>
         </div>

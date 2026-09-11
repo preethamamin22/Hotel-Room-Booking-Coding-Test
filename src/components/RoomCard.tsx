@@ -14,89 +14,91 @@ interface Props {
 export const RoomCard: React.FC<Props> = ({
   room, isSelected, onSelect, isAvailable, filterGuests,
 }) => {
-  const overCapacity = filterGuests > room.maxGuests;
-  const selectable = isAvailable && !overCapacity;
+  const overCap = filterGuests > room.maxGuests;
+  const selectable = isAvailable && !overCap;
+
+  let cardClass = 'rcard';
+  if (isSelected)   cardClass += ' rcard--selected';
+  if (!selectable)  cardClass += ' rcard--unavail';
 
   return (
     <article
-      className={`room-card
-        ${isSelected ? 'room-card--selected' : ''}
-        ${!selectable ? 'room-card--unavailable' : ''}`}
+      className={cardClass}
       onClick={() => selectable && onSelect(room.code)}
       id={`room-${room.code}`}
     >
-      {/* Photo */}
-      <div className="room-card__media">
-        <img src={room.image} alt={room.type} className="room-card__img" loading="lazy" />
+      {/* ── Photo ── */}
+      <div className="rcard__media">
+        <img src={room.image} alt={room.type} className="rcard__img" loading="lazy" />
 
-        <div className="room-card__code-badge">{room.code}</div>
+        <div className="rcard__code">{room.code}</div>
 
         {isSelected && (
-          <div className="room-card__selected-badge">
+          <div className="rcard__sel-badge">
             <Check size={12} /> Selected
           </div>
         )}
 
         {!isAvailable && (
-          <div className="room-card__unavail-overlay">
+          <div className="rcard__unavail-layer">
             <Lock size={18} />
-            <span>Unavailable for dates</span>
+            Unavailable for dates
           </div>
         )}
       </div>
 
-      {/* Details */}
-      <div className="room-card__body">
-        <div className="room-card__top">
+      {/* ── Details ── */}
+      <div className="rcard__body">
+        <div className="rcard__top">
           <div>
-            <div className="room-card__category">{room.type}</div>
-            <h3 className="room-card__name">{room.code} — {room.type}</h3>
+            <div className="rcard__cat">{room.type}</div>
+            <h3 className="rcard__name">{room.code} — {room.type}</h3>
           </div>
-          <div className="room-card__price">
-            <div className="room-card__price-amount">{formatCurrency(room.pricePerNight)}</div>
-            <div className="room-card__price-unit">per night, incl. taxes</div>
+          <div className="rcard__price">
+            <div className="rcard__amount">{formatCurrency(room.pricePerNight)}</div>
+            <div className="rcard__per">per night, incl. taxes</div>
           </div>
         </div>
 
-        <p className="room-card__desc">{room.description}</p>
+        <p className="rcard__desc">{room.description}</p>
 
-        <div className="room-card__specs">
-          <div className="spec-item">
+        <div className="rcard__specs">
+          <div className="spec">
             <Users size={14} />
             Up to {room.maxGuests} Guests
           </div>
-          {overCapacity && (
-            <div className="spec-item" style={{ color: 'var(--amber-600)' }}>
-              <AlertTriangle size={14} />
+          {overCap && (
+            <div className="spec spec--warn">
+              <AlertTriangle size={13} />
               Exceeds limit ({filterGuests} requested)
             </div>
           )}
         </div>
 
-        <div className="room-card__amenities">
+        <div className="rcard__tags">
           {room.amenities.map((a, i) => (
-            <span key={i} className="amenity-tag">{a}</span>
+            <span key={i} className="tag">{a}</span>
           ))}
         </div>
 
-        <div className="room-card__footer">
+        <div className="rcard__foot">
           {!isAvailable ? (
-            <span className="status-text status-text--booked">
+            <span className="rcard__status rcard__status--sold">
               <AlertTriangle size={13} /> Sold Out for Selected Dates
             </span>
-          ) : overCapacity ? (
-            <span className="status-text status-text--capacity">
-              <AlertTriangle size={13} /> Room Capacity Too Small
+          ) : overCap ? (
+            <span className="rcard__status rcard__status--cap">
+              <AlertTriangle size={13} /> Room Too Small for Party
             </span>
           ) : (
-            <span className="status-text status-text--available">
+            <span className="rcard__status rcard__status--ok">
               ✓ Available for Booking
             </span>
           )}
 
           <button
             type="button"
-            className={`btn-select ${isSelected ? 'btn-select--selected' : ''}`}
+            className={`btn-sel ${isSelected ? 'btn-sel--chosen' : 'btn-sel--idle'}`}
             disabled={!selectable}
             onClick={e => { e.stopPropagation(); if (selectable) onSelect(room.code); }}
           >

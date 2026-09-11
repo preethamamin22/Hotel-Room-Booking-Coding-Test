@@ -3,21 +3,22 @@ import { Hotel } from 'lucide-react';
 
 export const Footer: React.FC = () => (
   <footer className="footer">
-    <div className="footer__inner">
-      {/* Brand */}
-      <div className="footer__brand">
+    <div className="footer__grid">
+      {/* Brand column */}
+      <div>
         <div className="footer__brand-logo">
-          <div className="footer__brand-crest"><Hotel size={18} /></div>
+          <div className="footer__brand-icon"><Hotel size={18} /></div>
           <span className="footer__brand-name">Raintech Hotels</span>
         </div>
         <p className="footer__brand-desc">
-          A collection of five-star luxury properties offering unmatched hospitality across India's premier destinations.
+          A collection of five-star luxury properties offering unmatched
+          hospitality across India's most premier destinations.
         </p>
         <div className="footer__brand-stars">★ ★ ★ ★ ★</div>
       </div>
 
       {/* Accommodations */}
-      <div className="footer__col">
+      <div>
         <div className="footer__col-title">Accommodations</div>
         <div className="footer__links">
           <a href="#" className="footer__link">Deluxe Rooms</a>
@@ -28,7 +29,7 @@ export const Footer: React.FC = () => (
       </div>
 
       {/* Services */}
-      <div className="footer__col">
+      <div>
         <div className="footer__col-title">Hotel Services</div>
         <div className="footer__links">
           <a href="#" className="footer__link">Fine Dining</a>
@@ -39,7 +40,7 @@ export const Footer: React.FC = () => (
       </div>
 
       {/* Contact */}
-      <div className="footer__col">
+      <div>
         <div className="footer__col-title">Contact Us</div>
         <div className="footer__links">
           <span className="footer__link">reservations@raintech.in</span>
@@ -52,12 +53,12 @@ export const Footer: React.FC = () => (
 
     <div className="footer__bottom">
       <span className="footer__copy">
-        © 2026 Raintech Hotels & Resorts. All rights reserved. · Developer Skills Assessment
+        © 2026 Raintech Hotels & Resorts Pvt. Ltd. · Developer Skills Assessment
       </span>
-      <div className="footer__policy-links">
-        <a href="#" className="footer__policy-link">Privacy Policy</a>
-        <a href="#" className="footer__policy-link">Terms & Conditions</a>
-        <a href="#" className="footer__policy-link">Cookie Preferences</a>
+      <div className="footer__legal">
+        <a href="#" className="footer__legal-link">Privacy Policy</a>
+        <a href="#" className="footer__legal-link">Terms & Conditions</a>
+        <a href="#" className="footer__legal-link">Cookie Preferences</a>
       </div>
     </div>
   </footer>
