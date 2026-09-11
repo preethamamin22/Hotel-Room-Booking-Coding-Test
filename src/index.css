@@ -205,7 +205,7 @@ input, select { font-family: inherit; }
 }
 .sw-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--gold); }
 .sw-title { font-size: .7rem; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: var(--muted); }
-.sw-grid { display: grid; grid-template-columns: 1fr 1fr 180px; gap: 14px; }
+.sw-grid { display: grid; grid-template-columns: 1.1fr 1.1fr 1.3fr auto; gap: 12px; align-items: end; }
 .sw-field { display: flex; flex-direction: column; gap: 6px; }
 .sw-label { font-size: .68rem; font-weight: 700; text-transform: uppercase; letter-spacing: .09em; color: var(--body); }
 .sw-inp-wrap { position: relative; }
@@ -230,6 +230,63 @@ input, select { font-family: inherit; }
   box-shadow: 0 0 0 3px rgba(26,26,46,.08);
 }
 .sw-inp.err { border-color: var(--red); background: var(--red-bg); }
+
+/* Guest button trigger (Booking.com style) */
+.sw-guest-btn {
+  display: flex; align-items: center; justify-content: space-between;
+  text-align: left; cursor: pointer;
+}
+.sw-guest-text { font-size: .86rem; font-weight: 600; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sw-caret { color: var(--muted); font-size: .75rem; margin-left: 6px; }
+
+/* Guest Stepper Popover */
+.sw-popover {
+  position: absolute; top: calc(100% + 8px); left: 0; width: 280px;
+  background: var(--white); border: 1px solid var(--ivory2); border-radius: 14px;
+  box-shadow: 0 16px 36px rgba(26,26,46,.16); padding: 18px 20px 16px;
+  z-index: 100; animation: popIn .16s ease-out;
+}
+@keyframes popIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.sw-popover-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 0; border-bottom: 1px solid var(--ivory2);
+}
+.sw-popover-row:last-of-type { border-bottom: none; }
+.sw-popover-lbl { font-size: .86rem; font-weight: 700; color: var(--ink); line-height: 1.2; }
+.sw-popover-sub { font-size: .68rem; color: var(--muted); margin-top: 2px; }
+.sw-stepper { display: flex; align-items: center; gap: 12px; }
+.sw-step-btn {
+  width: 32px; height: 32px; border-radius: 50%;
+  border: 1.5px solid var(--ivory3); background: var(--ivory);
+  display: grid; place-items: center; font-size: 1.05rem; font-weight: 700;
+  color: var(--ink); cursor: pointer; transition: all .12s;
+}
+.sw-step-btn:hover:not(:disabled) { border-color: var(--ink); background: #fff; }
+.sw-step-btn:disabled { opacity: .3; cursor: not-allowed; }
+.sw-step-val { font-size: .95rem; font-weight: 700; color: var(--ink); min-width: 18px; text-align: center; }
+.sw-popover-foot { margin-top: 14px; text-align: right; }
+.sw-popover-done {
+  padding: 7px 18px; background: var(--ink); color: #fff;
+  border-radius: 8px; font-size: .78rem; font-weight: 700;
+  transition: opacity .15s; cursor: pointer;
+}
+.sw-popover-done:hover { opacity: .88; }
+
+/* Search Action Button */
+.sw-search-action { display: flex; flex-direction: column; justify-content: flex-end; }
+.sw-search-btn {
+  height: 50px; padding: 0 24px;
+  background: var(--ink); color: #fff;
+  border-radius: 10px; font-size: .88rem; font-weight: 700;
+  display: flex; align-items: center; gap: 8px;
+  box-shadow: 0 4px 14px rgba(26,26,46,.2);
+  transition: background .15s, transform .12s; cursor: pointer;
+  white-space: nowrap;
+}
+.sw-search-btn:hover { background: #2b2b42; transform: translateY(-1px); }
 
 /* Eliminate excessive internal gap in Chrome/Edge date pickers */
 input[type="date"].sw-inp {
@@ -491,6 +548,431 @@ select.sw-inp {
 }
 .folio-mod:hover { background: var(--ivory); color: var(--ink); }
 
+/* Change Dates Button */
+.btn-change-dates {
+  padding: 6px 14px;
+  background: var(--white);
+  border: 1.5px solid var(--ivory2);
+  border-radius: 8px;
+  font-size: .78rem;
+  font-weight: 700;
+  color: var(--body);
+  transition: all .15s;
+  cursor: pointer;
+}
+.btn-change-dates:hover {
+  background: var(--ink);
+  color: #fff;
+  border-color: var(--ink);
+}
+
+/* ================================================================
+   HOTEL SHOWCASE (Booking.com style Pre-Search State)
+   ================================================================ */
+.showcase {
+  display: flex;
+  flex-direction: column;
+  gap: 36px;
+  margin-top: -12px;
+}
+.showcase-banner {
+  background: linear-gradient(135deg, #1f1f33 0%, #141424 100%);
+  border: 1px solid rgba(201,148,58,.3);
+  border-radius: 16px;
+  padding: 24px 32px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  color: #fff;
+  box-shadow: 0 8px 24px rgba(26,26,46,.1);
+}
+.showcase-banner-icon {
+  font-size: 2.2rem;
+  flex-shrink: 0;
+}
+.showcase-banner-text {
+  flex: 1;
+}
+.showcase-banner-text h3 {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 4px;
+}
+.showcase-banner-text p {
+  font-size: .84rem;
+  color: rgba(255,255,255,.7);
+  line-height: 1.5;
+}
+.showcase-banner-btn {
+  padding: 11px 22px;
+  background: var(--gold);
+  color: #141424;
+  border-radius: 8px;
+  font-size: .84rem;
+  font-weight: 700;
+  white-space: nowrap;
+  transition: all .15s;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(201,148,58,.3);
+}
+.showcase-banner-btn:hover {
+  background: #deb05a;
+  transform: translateY(-1px);
+}
+
+/* Booking.com Perks Grid */
+.showcase-perks {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+.perk-card {
+  background: var(--white);
+  border: 1px solid var(--ivory2);
+  border-radius: 12px;
+  padding: 18px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  box-shadow: 0 2px 8px rgba(26,26,46,.04);
+}
+.perk-icon {
+  font-size: 1.4rem;
+  flex-shrink: 0;
+}
+.perk-title {
+  font-size: .84rem;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 3px;
+}
+.perk-desc {
+  font-size: .74rem;
+  color: var(--body);
+  line-height: 1.45;
+}
+
+/* Category Previews */
+.showcase-section {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.showcase-section-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+.showcase-title {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 1.85rem;
+  font-weight: 400;
+  color: var(--ink);
+}
+.showcase-subtitle {
+  font-size: .88rem;
+  color: var(--body);
+  margin-top: 4px;
+}
+.showcase-count {
+  font-size: .78rem;
+  font-weight: 700;
+  color: var(--gold);
+  background: var(--gold-bg);
+  padding: 4px 12px;
+  border-radius: 20px;
+  border: 1px solid rgba(201,148,58,.25);
+}
+.showcase-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+  gap: 24px;
+}
+.showcase-card {
+  background: var(--white);
+  border: 1px solid var(--ivory2);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(26,26,46,.06);
+  display: flex;
+  flex-direction: column;
+  transition: transform .2s, box-shadow .2s;
+}
+.showcase-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 28px rgba(26,26,46,.1);
+}
+.showcase-card-img-wrap {
+  position: relative;
+  height: 220px;
+  overflow: hidden;
+}
+.showcase-card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform .3s;
+}
+.showcase-card:hover .showcase-card-img {
+  transform: scale(1.03);
+}
+.showcase-card-badge {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  background: rgba(20,20,36,.8);
+  color: #fff;
+  font-size: .72rem;
+  font-weight: 700;
+  padding: 3px 9px;
+  border-radius: 6px;
+  backdrop-filter: blur(4px);
+}
+.showcase-card-body {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: 12px;
+}
+.showcase-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+.showcase-card-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1.3;
+}
+.showcase-card-price {
+  text-align: right;
+  flex-shrink: 0;
+}
+.showcase-price-from {
+  font-size: .65rem;
+  text-transform: uppercase;
+  color: var(--muted);
+  display: block;
+}
+.showcase-price-val {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--ink);
+}
+.showcase-price-per {
+  font-size: .68rem;
+  color: var(--muted);
+}
+.showcase-card-desc {
+  font-size: .82rem;
+  color: var(--body);
+  line-height: 1.55;
+  flex: 1;
+}
+.showcase-card-amenities {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 4px;
+}
+.showcase-amenity-chip {
+  font-size: .72rem;
+  color: var(--body);
+  background: var(--ivory);
+  border: 1px solid var(--ivory2);
+  padding: 3px 8px;
+  border-radius: 6px;
+}
+.showcase-book-btn {
+  margin-top: 8px;
+  padding: 10px 16px;
+  background: var(--ink);
+  color: #fff;
+  border-radius: 8px;
+  font-size: .82rem;
+  font-weight: 700;
+  text-align: center;
+  transition: background .15s;
+  cursor: pointer;
+}
+.showcase-book-btn:hover {
+  background: #2b2b42;
+}
+
+/* ================================================================
+   GUEST DETAILS FORM & CONFIRMATION VOUCHER
+   ================================================================ */
+.folio-guest-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.folio-step-tag {
+  font-size: .68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--gold);
+  background: var(--gold-bg);
+  padding: 4px 10px;
+  border-radius: 6px;
+  display: inline-block;
+  align-self: flex-start;
+}
+.folio-field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.folio-inp {
+  width: 100%;
+  padding: 9px 12px;
+  border: 1.5px solid var(--ivory2);
+  border-radius: 8px;
+  background: var(--ivory);
+  font-size: .85rem;
+  font-weight: 600;
+  color: var(--ink);
+  transition: all .15s;
+}
+.folio-inp:focus {
+  outline: none;
+  border-color: var(--ink);
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(26,26,46,.08);
+}
+.folio-txt {
+  resize: vertical;
+  min-height: 54px;
+  font-family: inherit;
+}
+.folio-stay-summary-mini {
+  background: var(--ivory);
+  border: 1px solid var(--ivory2);
+  border-radius: 8px;
+  padding: 10px 12px;
+}
+.mini-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: .84rem;
+  color: var(--ink);
+  font-weight: 600;
+}
+.mini-sub {
+  font-size: .72rem;
+  color: var(--green);
+  margin-top: 3px;
+  font-weight: 500;
+}
+.folio-form-btns {
+  display: flex;
+  gap: 10px;
+  margin-top: 6px;
+}
+.folio-back-btn {
+  padding: 12px 16px;
+  background: var(--white);
+  border: 1.5px solid var(--ivory2);
+  border-radius: 8px;
+  font-size: .82rem;
+  font-weight: 700;
+  color: var(--body);
+  cursor: pointer;
+  transition: all .15s;
+}
+.folio-back-btn:hover {
+  background: var(--ivory);
+  color: var(--ink);
+}
+
+/* Confirmation Voucher */
+.folio-ok-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--green-bg);
+  border: 1px solid #b7dfce;
+  color: var(--green);
+  font-size: .82rem;
+  font-weight: 700;
+  padding: 6px 14px;
+  border-radius: 20px;
+}
+.folio-ok-check {
+  font-size: 1rem;
+}
+.folio-ref-box {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  background: var(--ivory);
+  border: 1px dashed var(--ivory3);
+  padding: 8px 16px;
+  border-radius: 8px;
+  width: 100%;
+}
+.folio-ref-lbl {
+  font-size: .65rem;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--muted);
+}
+.folio-ref-id {
+  font-size: 1.15rem;
+  font-weight: 800;
+  letter-spacing: .12em;
+  color: var(--ink);
+  font-family: monospace;
+}
+.receipt-sep {
+  height: 1px;
+  background: var(--ivory2);
+  margin: 6px 0;
+}
+.rc-lbl {
+  color: var(--muted);
+  font-size: .78rem;
+}
+.rc-req {
+  font-style: italic;
+  color: var(--body);
+  max-width: 160px;
+  text-align: right;
+}
+.receipt-total-val {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.15rem;
+  color: var(--ink);
+}
+.folio-actions {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+}
+.folio-print-btn {
+  flex: 1;
+  padding: 11px;
+  background: var(--ivory);
+  border: 1.5px solid var(--ivory2);
+  border-radius: 7px;
+  font-size: .8rem;
+  font-weight: 700;
+  color: var(--body);
+  cursor: pointer;
+  transition: all .15s;
+}
+.folio-print-btn:hover {
+  background: var(--white);
+  color: var(--ink);
+}
+
 /* ================================================================
    FOOTER
    ================================================================ */
@@ -577,6 +1059,11 @@ select.sw-inp {
   .hero-stat-n { font-size: 1.4rem; }
   .sw-grid { grid-template-columns: 1fr 1fr; }
   .sw-grid .sw-field:last-child { grid-column: 1 / -1; }
+  .sw-search-btn { width: 100%; justify-content: center; }
+  .sw-popover { width: 100%; }
+  .showcase-perks { grid-template-columns: 1fr 1fr; }
+  .showcase-banner { flex-direction: column; align-items: flex-start; gap: 14px; padding: 20px; }
+  .showcase-banner-btn { width: 100%; text-align: center; }
   .sw-lift { transform: translateY(-32px); }
   .rcard { grid-template-columns: 1fr; }
   .rcard-photo { min-height: 210px; height: 210px; }

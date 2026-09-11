@@ -27,3 +27,12 @@ export interface BookingCalculation {
   pricePerNight: number;
   totalPrice: number;
 }
+
+export interface GuestDetails {
+  fullName: string;
+  email: string;
+  phone: string;
+  adults: number;
+  children: number;
+  specialRequests?: string;
+}
