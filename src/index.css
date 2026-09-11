@@ -67,6 +67,9 @@ input, select { font-family: inherit; }
   box-shadow: 0 1px 3px rgba(26,26,46,.05);
   position: sticky; top: 0; z-index: 100;
 }
+
+/* ensure nav-panel top offset matches nav height */
+.nav-panel { top: 68px; }
 .nav-inner {
   max-width: 1280px; margin: 0 auto; padding: 0 32px;
   height: 68px; display: flex; align-items: center; gap: 32px;
@@ -497,7 +500,9 @@ input, select { font-family: inherit; }
   .tb-right { display: none; }
   .nav-links { display: none; }
   .nav-hamburger { display: flex; }
-  .nav-cta { padding: 7px 14px; font-size: .76rem; }
+  /* Brand left, hamburger right */
+  .nav-inner { justify-content: space-between; gap: 12px; }
+  .nav-cta { display: none; }
   .hero { height: 420px; }
   .hero-h1 { font-size: clamp(2rem, 6vw, 3rem); }
   .hero-sub { max-width: 100%; }
@@ -519,10 +524,11 @@ input, select { font-family: inherit; }
   .tb { padding: 7px 0; }
   .tb-left .tb-item:not(:first-child) { display: none; }
   .tb-left .tb-sep { display: none; }
-  .nav-inner { height: 60px; gap: 10px; padding: 0 16px; }
-  .nav-logo { width: 38px; height: 38px; font-size: 1rem; }
+  .nav-inner { height: 60px; gap: 0; padding: 0 16px; justify-content: space-between; }
+  .nav-panel { top: 60px; }
+  .nav-logo { width: 36px; height: 36px; font-size: .95rem; }
   .nav-sub { display: none; }
-  .nav-cta { display: none; }
+  .nav-name { font-size: .88rem; }
   .hero { height: 360px; }
   .hero-body { padding: 0 16px 32px; }
   .hero-h1 { font-size: clamp(1.8rem, 8vw, 2.5rem); }
