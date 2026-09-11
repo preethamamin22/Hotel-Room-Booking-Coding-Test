@@ -59,7 +59,8 @@ src/
 │   ├── Footer.tsx
 │   ├── Header.tsx
 │   ├── Hero.tsx
-│   └── RoomCard.tsx
+│   ├── HotelShowcase.tsx
+│   └── RoomsTable.tsx
 ├── types/
 │   └── booking.ts
 ├── utils/
