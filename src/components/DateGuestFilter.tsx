@@ -219,7 +219,7 @@ export const DateGuestFilter: React.FC<Props> = ({
           )}
         </div>
 
-        {!validation.isValid && validation.message && (
+        {!validation.isValid && validation.message && validation.errorType !== 'MISSING_DATE' && (
           <div className="sw-err" role="alert">⚠ {validation.message}</div>
         )}
       </div>

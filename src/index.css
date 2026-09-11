@@ -518,6 +518,198 @@ input[type="date"].sw-inp::-webkit-calendar-picker-indicator:hover { opacity: 1;
 .folio-cta:hover:not(:disabled) { background: var(--ink2); transform: translateY(-1px); }
 .folio-cta:disabled { background: var(--ivory2); color: var(--muted); cursor: not-allowed; }
 
+/* ================================================================
+   BOOKING DETAILS & CONFIRMATION PAGE (Booking.com style)
+   ================================================================ */
+.details-page {
+  animation: fadeIn .2s ease-out;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.details-top-bar {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid var(--ivory2);
+  flex-wrap: wrap; gap: 12px;
+}
+.details-back-btn {
+  padding: 8px 16px; background: var(--white); border: 1.5px solid var(--ivory2);
+  border-radius: 8px; font-size: .84rem; font-weight: 700; color: var(--ink);
+  cursor: pointer; transition: all .15s;
+}
+.details-back-btn:hover { background: var(--ink); color: #fff; border-color: var(--ink); }
+
+.details-step-indicator {
+  font-size: .75rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em;
+  color: var(--gold); background: var(--gold-bg); padding: 5px 12px; border-radius: 20px;
+  border: 1px solid rgba(201,148,58,.25);
+}
+
+.details-grid {
+  display: grid; grid-template-columns: 1fr 1.15fr; gap: 32px; align-items: start;
+}
+
+/* Summary Card */
+.summary-card {
+  background: var(--white); border: 1.5px solid var(--ivory2); border-radius: 16px;
+  padding: 24px; box-shadow: 0 4px 16px rgba(20,20,36,.04);
+}
+.summary-card-header {
+  font-family: 'Playfair Display', serif; font-size: 1.25rem; font-weight: 700;
+  color: var(--ink); margin-bottom: 18px; padding-bottom: 12px;
+  border-bottom: 1px solid var(--ivory2);
+}
+.summary-room-preview {
+  display: flex; gap: 16px; margin-bottom: 18px;
+}
+.summary-room-img {
+  width: 110px; height: 80px; object-fit: cover; border-radius: 10px; flex-shrink: 0;
+}
+.summary-hotel-name { font-size: .72rem; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
+.summary-room-title { font-size: 1.1rem; font-weight: 700; color: var(--ink); margin: 3px 0; }
+.summary-room-meta { font-size: .78rem; color: var(--body); }
+
+.summary-stay-dates {
+  background: var(--ivory); border: 1px solid var(--ivory2); border-radius: 10px;
+  padding: 12px 16px; display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 12px;
+}
+.summary-date-box { display: flex; flex-direction: column; }
+.s-date-cap { font-size: .65rem; text-transform: uppercase; color: var(--muted); font-weight: 700; }
+.s-date-val { font-size: .88rem; font-weight: 700; color: var(--ink); margin: 2px 0; }
+.s-time { font-size: .7rem; color: var(--muted); }
+.summary-date-arrow { color: var(--gold); font-weight: 700; font-size: 1.1rem; }
+
+.summary-duration-pill {
+  font-size: .78rem; font-weight: 700; color: var(--gold); background: var(--gold-bg);
+  padding: 6px 12px; border-radius: 8px; border: 1px solid rgba(201,148,58,.2);
+  margin-bottom: 16px; text-align: center;
+}
+
+.summary-perks-list {
+  display: flex; flex-direction: column; gap: 6px; margin-bottom: 20px; font-size: .78rem; color: var(--green); font-weight: 600;
+}
+
+.summary-price-box {
+  background: var(--ivory); border: 1px solid var(--ivory2); border-radius: 10px;
+  padding: 16px;
+}
+.summary-price-head {
+  font-size: .68rem; font-weight: 800; text-transform: uppercase; letter-spacing: .08em;
+  color: var(--muted); margin-bottom: 10px;
+}
+.sp-row {
+  display: flex; justify-content: space-between; font-size: .84rem; color: var(--body); margin-bottom: 6px;
+}
+.sp-row:last-of-type { margin-bottom: 0; }
+.sp-div { height: 1px; background: var(--ivory2); margin: 10px 0; }
+.sp-row.total { font-size: .95rem; font-weight: 700; color: var(--ink); }
+.sp-total-val {
+  font-family: 'Playfair Display', serif; font-size: 1.4rem; font-weight: 700; color: var(--ink);
+}
+
+/* Guest Details Form */
+.guest-form-card {
+  background: var(--white); border: 1.5px solid var(--ivory2); border-radius: 16px;
+  padding: 28px; box-shadow: 0 4px 16px rgba(20,20,36,.04);
+}
+.guest-form-title {
+  font-family: 'Playfair Display', serif; font-size: 1.4rem; font-weight: 700;
+  color: var(--ink); margin-bottom: 4px;
+}
+.guest-form-sub {
+  font-size: .84rem; color: var(--body); margin-bottom: 20px;
+}
+.guest-form-alert {
+  background: var(--red-bg); border: 1px solid #f6b5b5; color: var(--red);
+  padding: 10px 14px; border-radius: 8px; font-size: .82rem; font-weight: 600;
+  margin-bottom: 16px;
+}
+.form-field { display: flex; flex-direction: column; gap: 5px; margin-bottom: 16px; }
+.form-label { font-size: .78rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--ink); }
+.form-input {
+  width: 100%; padding: 11px 14px; border: 1.5px solid var(--ivory2); border-radius: 8px;
+  background: var(--ivory); font-size: .88rem; font-weight: 600; color: var(--ink);
+  outline: none; transition: all .15s;
+}
+.form-input:focus { border-color: var(--ink); background: #fff; box-shadow: 0 0 0 3px rgba(20,20,36,.06); }
+.form-textarea { resize: vertical; min-height: 70px; font-family: inherit; }
+.form-hint { font-size: .72rem; color: var(--muted); margin-top: 2px; }
+.form-guarantee-note {
+  font-size: .76rem; color: var(--green); font-weight: 600; text-align: center;
+  margin: 16px 0 12px;
+}
+.form-submit-btn {
+  width: 100%; padding: 14px; background: var(--ink); color: #fff;
+  border-radius: 8px; font-size: .92rem; font-weight: 700;
+  cursor: pointer; transition: all .15s; box-shadow: 0 4px 14px rgba(20,20,36,.18);
+}
+.form-submit-btn:hover { background: var(--ink2); transform: translateY(-1px); }
+
+/* Voucher Card */
+.voucher-card {
+  max-width: 680px; margin: 0 auto; background: var(--white);
+  border: 1.5px solid var(--ivory2); border-radius: 16px; overflow: hidden;
+  box-shadow: 0 8px 32px rgba(20,20,36,.08);
+}
+.voucher-header {
+  background: var(--green-bg); border-bottom: 1px solid #b7dfce;
+  padding: 32px 24px; text-align: center;
+}
+.voucher-check-icon {
+  font-size: 3rem; color: var(--green); line-height: 1; margin-bottom: 8px;
+}
+.voucher-title {
+  font-family: 'Playfair Display', serif; font-size: 1.6rem; font-weight: 700; color: var(--green);
+  margin-bottom: 6px;
+}
+.voucher-subtitle { font-size: .85rem; color: var(--body); }
+.voucher-ref-box {
+  display: inline-flex; flex-direction: column; gap: 2px;
+  background: #fff; border: 1px dashed #b7dfce; padding: 10px 24px;
+  border-radius: 8px; margin-top: 14px;
+}
+.voucher-ref-label { font-size: .65rem; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); font-weight: 700; }
+.voucher-ref-val { font-size: 1.25rem; font-weight: 800; font-family: monospace; color: var(--ink); }
+
+.voucher-body { padding: 28px; }
+.voucher-section-title {
+  font-size: .75rem; font-weight: 800; text-transform: uppercase; letter-spacing: .1em;
+  color: var(--muted); margin-bottom: 16px;
+}
+.voucher-grid { display: flex; flex-direction: column; gap: 10px; }
+.voucher-row {
+  display: flex; justify-content: space-between; font-size: .86rem; color: var(--ink);
+  padding: 6px 0; border-bottom: 1px solid var(--ivory2);
+}
+.voucher-row.total {
+  border-bottom: none; border-top: 2px solid var(--ink); padding-top: 14px;
+  font-size: 1rem; font-weight: 700; margin-top: 8px;
+}
+.voucher-total-price {
+  font-family: 'Playfair Display', serif; font-size: 1.35rem; color: var(--ink); font-weight: 700;
+}
+.v-lbl { color: var(--muted); font-weight: 500; }
+
+.voucher-footer {
+  padding: 20px 28px; background: var(--ivory); border-top: 1px solid var(--ivory2);
+  display: flex; gap: 12px; justify-content: flex-end;
+}
+.voucher-btn-print {
+  padding: 10px 18px; background: #fff; border: 1.5px solid var(--ivory2);
+  border-radius: 8px; font-size: .82rem; font-weight: 700; color: var(--body);
+  cursor: pointer; transition: all .15s;
+}
+.voucher-btn-print:hover { background: var(--ivory); color: var(--ink); }
+.voucher-btn-done {
+  padding: 10px 22px; background: var(--ink); color: #fff;
+  border-radius: 8px; font-size: .82rem; font-weight: 700;
+  cursor: pointer; transition: all .15s;
+}
+.voucher-btn-done:hover { background: var(--ink2); }
+
 /* Step 2 Guest Details Form inside Folio */
 .folio-form { display: flex; flex-direction: column; gap: 12px; }
 .folio-field { display: flex; flex-direction: column; gap: 4px; }
@@ -622,6 +814,10 @@ input[type="date"].sw-inp::-webkit-calendar-picker-indicator:hover { opacity: 1;
   .folio { position: static; }
   .page-grid > section:last-child { order: -1; }
   .showcase-trust { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 860px) {
+  .details-grid { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 768px) {

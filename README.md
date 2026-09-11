@@ -54,7 +54,7 @@ npm run build
 ```
 src/
 ├── components/
-│   ├── BookingSummary.tsx
+│   ├── BookingDetailsView.tsx
 │   ├── DateGuestFilter.tsx
 │   ├── Footer.tsx
 │   ├── Header.tsx
