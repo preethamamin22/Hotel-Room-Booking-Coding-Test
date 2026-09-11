@@ -19,35 +19,35 @@ export const DateGuestFilter: React.FC<Props> = ({
   validation, minDate,
 }) => {
   const applyPreset = (nights: number) => {
-    const start = new Date(checkIn || minDate);
-    const end = new Date(start);
+    const base = checkIn ? new Date(checkIn + 'T00:00:00') : new Date(minDate + 'T00:00:00');
+    const end  = new Date(base);
     end.setDate(end.getDate() + nights);
     const fmt = (d: Date) => d.toISOString().split('T')[0];
-    if (!checkIn) onCheckInChange(fmt(start));
+    if (!checkIn) onCheckInChange(fmt(base));
     onCheckOutChange(fmt(end));
   };
 
   const reset = () => { onCheckInChange(''); onCheckOutChange(''); };
 
   return (
-    <div className="search-wrap">
-      <div className="search-float">
-        <div className="search-card">
-          <div className="search-card__label">
-            <span className="search-card__label-dot" />
-            Plan Your Stay
+    <div className="search-zone">
+      <div className="search-lift">
+        <div className="search-box">
+          <div className="search-box__head">
+            <span className="search-box__dot" />
+            <span className="search-box__title">Plan Your Stay</span>
           </div>
 
-          <div className="search-grid">
+          <div className="search-row">
             {/* Check-in */}
-            <div className="sfield">
-              <label htmlFor="checkin" className="sfield__lbl">Check-in Date</label>
-              <div className="sfield__wrap">
-                <Calendar size={16} className="sfield__icon" />
+            <div className="sf">
+              <label htmlFor="checkin" className="sf__label">Check-in Date</label>
+              <div className="sf__wrap">
+                <Calendar size={16} className="sf__icon" />
                 <input
                   id="checkin"
                   type="date"
-                  className={`sfield__input${validation.errorType === 'PAST_DATE' ? ' sfield__input--err' : ''}`}
+                  className={`sf__control${validation.errorType === 'PAST_DATE' ? ' sf__control--err' : ''}`}
                   value={checkIn}
                   min={minDate}
                   onChange={e => onCheckInChange(e.target.value)}
@@ -56,14 +56,14 @@ export const DateGuestFilter: React.FC<Props> = ({
             </div>
 
             {/* Check-out */}
-            <div className="sfield">
-              <label htmlFor="checkout" className="sfield__lbl">Check-out Date</label>
-              <div className="sfield__wrap">
-                <Calendar size={16} className="sfield__icon" />
+            <div className="sf">
+              <label htmlFor="checkout" className="sf__label">Check-out Date</label>
+              <div className="sf__wrap">
+                <Calendar size={16} className="sf__icon" />
                 <input
                   id="checkout"
                   type="date"
-                  className={`sfield__input${validation.errorType === 'INVALID_RANGE' ? ' sfield__input--err' : ''}`}
+                  className={`sf__control${validation.errorType === 'INVALID_RANGE' ? ' sf__control--err' : ''}`}
                   value={checkOut}
                   min={checkIn || minDate}
                   onChange={e => onCheckOutChange(e.target.value)}
@@ -72,13 +72,13 @@ export const DateGuestFilter: React.FC<Props> = ({
             </div>
 
             {/* Guests */}
-            <div className="sfield">
-              <label htmlFor="guests" className="sfield__lbl">Guests</label>
-              <div className="sfield__wrap">
-                <Users size={16} className="sfield__icon" />
+            <div className="sf">
+              <label htmlFor="guests" className="sf__label">Guests</label>
+              <div className="sf__wrap">
+                <Users size={16} className="sf__icon" />
                 <select
                   id="guests"
-                  className="sfield__input"
+                  className="sf__control"
                   value={guests}
                   onChange={e => onGuestsChange(Number(e.target.value))}
                 >
@@ -91,28 +91,24 @@ export const DateGuestFilter: React.FC<Props> = ({
             </div>
           </div>
 
-          {/* Presets */}
-          <div className="search-bottom">
-            <div className="presets-row">
-              <span className="presets-label">Quick Stay:</span>
-              {[1, 2, 3, 5, 7].map(n => (
-                <button key={n} type="button" className="preset" onClick={() => applyPreset(n)}>
-                  {n} {n === 1 ? 'Night' : 'Nights'}
-                </button>
-              ))}
-              {(checkIn || checkOut) && (
-                <button type="button" className="preset preset--clear" onClick={reset}>
-                  <RotateCcw size={11} /> Clear
-                </button>
-              )}
-            </div>
+          {/* Quick presets */}
+          <div className="search-foot">
+            <span className="sf-label">Quick Stay:</span>
+            {[1, 2, 3, 5, 7].map(n => (
+              <button key={n} type="button" className="quick-btn" onClick={() => applyPreset(n)}>
+                {n} {n === 1 ? 'Night' : 'Nights'}
+              </button>
+            ))}
+            {(checkIn || checkOut) && (
+              <button type="button" className="quick-btn quick-btn--clear" onClick={reset}>
+                <RotateCcw size={11} /> Clear
+              </button>
+            )}
           </div>
 
-          {/* Error Banner */}
           {!validation.isValid && validation.message && (
-            <div className="search-alert search-alert--err" role="alert">
-              <AlertCircle size={16} />
-              {validation.message}
+            <div className="search-error" role="alert">
+              <AlertCircle size={16} /> {validation.message}
             </div>
           )}
         </div>

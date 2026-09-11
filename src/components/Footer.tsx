@@ -3,18 +3,18 @@ import { Hotel } from 'lucide-react';
 
 export const Footer: React.FC = () => (
   <footer className="footer">
-    <div className="footer__grid">
-      {/* Brand column */}
+    <div className="footer__inner">
+      {/* Brand */}
       <div>
-        <div className="footer__brand-logo">
-          <div className="footer__brand-icon"><Hotel size={18} /></div>
-          <span className="footer__brand-name">Raintech Hotels</span>
+        <div className="footer__logo-row">
+          <div className="footer__logo-icon"><Hotel size={18} /></div>
+          <span className="footer__logo-name">Raintech Hotels</span>
         </div>
-        <p className="footer__brand-desc">
+        <p className="footer__desc">
           A collection of five-star luxury properties offering unmatched
           hospitality across India's most premier destinations.
         </p>
-        <div className="footer__brand-stars">★ ★ ★ ★ ★</div>
+        <div className="footer__stars">★ ★ ★ ★ ★</div>
       </div>
 
       {/* Accommodations */}
@@ -51,14 +51,14 @@ export const Footer: React.FC = () => (
       </div>
     </div>
 
-    <div className="footer__bottom">
+    <div className="footer__bar">
       <span className="footer__copy">
         © 2026 Raintech Hotels & Resorts Pvt. Ltd. · Developer Skills Assessment
       </span>
       <div className="footer__legal">
-        <a href="#" className="footer__legal-link">Privacy Policy</a>
-        <a href="#" className="footer__legal-link">Terms & Conditions</a>
-        <a href="#" className="footer__legal-link">Cookie Preferences</a>
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms & Conditions</a>
+        <a href="#">Cookie Preferences</a>
       </div>
     </div>
   </footer>

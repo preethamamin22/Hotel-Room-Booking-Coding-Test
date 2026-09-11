@@ -17,88 +17,84 @@ export const RoomCard: React.FC<Props> = ({
   const overCap = filterGuests > room.maxGuests;
   const selectable = isAvailable && !overCap;
 
-  let cardClass = 'rcard';
-  if (isSelected)   cardClass += ' rcard--selected';
-  if (!selectable)  cardClass += ' rcard--unavail';
-
   return (
     <article
-      className={cardClass}
+      className={`rc${isSelected ? ' rc--active' : ''}${!selectable ? ' rc--dim' : ''}`}
       onClick={() => selectable && onSelect(room.code)}
       id={`room-${room.code}`}
+      role="button"
+      tabIndex={selectable ? 0 : -1}
+      onKeyDown={e => e.key === 'Enter' && selectable && onSelect(room.code)}
     >
-      {/* ── Photo ── */}
-      <div className="rcard__media">
-        <img src={room.image} alt={room.type} className="rcard__img" loading="lazy" />
-
-        <div className="rcard__code">{room.code}</div>
+      {/* Photo */}
+      <div className="rc__photo">
+        <img src={room.image} alt={`${room.type} — ${room.code}`} className="rc__img" loading="lazy" />
+        <div className="rc__code">{room.code}</div>
 
         {isSelected && (
-          <div className="rcard__sel-badge">
+          <div className="rc__sel-pill">
             <Check size={12} /> Selected
           </div>
         )}
 
         {!isAvailable && (
-          <div className="rcard__unavail-layer">
-            <Lock size={18} />
-            Unavailable for dates
+          <div className="rc__sold-cover">
+            <div className="rc__sold-inner">
+              <Lock size={20} className="rc__sold-icon" />
+              <div className="rc__sold-text">Unavailable for Dates</div>
+            </div>
           </div>
         )}
       </div>
 
-      {/* ── Details ── */}
-      <div className="rcard__body">
-        <div className="rcard__top">
-          <div>
-            <div className="rcard__cat">{room.type}</div>
-            <h3 className="rcard__name">{room.code} — {room.type}</h3>
+      {/* Content */}
+      <div className="rc__body">
+        <div className="rc__top">
+          <div className="rc__left">
+            <div className="rc__type">{room.type}</div>
+            <h3 className="rc__name">{room.code} — {room.type}</h3>
           </div>
-          <div className="rcard__price">
-            <div className="rcard__amount">{formatCurrency(room.pricePerNight)}</div>
-            <div className="rcard__per">per night, incl. taxes</div>
+          <div className="rc__right">
+            <div className="rc__price">{formatCurrency(room.pricePerNight)}</div>
+            <div className="rc__per">per night, incl. taxes</div>
           </div>
         </div>
 
-        <p className="rcard__desc">{room.description}</p>
+        <p className="rc__desc">{room.description}</p>
 
-        <div className="rcard__specs">
-          <div className="spec">
-            <Users size={14} />
-            Up to {room.maxGuests} Guests
+        <div className="rc__specs">
+          <div className="rc__spec">
+            <Users size={14} /> Up to {room.maxGuests} Guests
           </div>
           {overCap && (
-            <div className="spec spec--warn">
-              <AlertTriangle size={13} />
-              Exceeds limit ({filterGuests} requested)
+            <div className="rc__spec rc__spec--warn">
+              <AlertTriangle size={13} /> Exceeds capacity ({filterGuests} guests)
             </div>
           )}
         </div>
 
-        <div className="rcard__tags">
+        <div className="rc__tags">
           {room.amenities.map((a, i) => (
             <span key={i} className="tag">{a}</span>
           ))}
         </div>
 
-        <div className="rcard__foot">
+        <div className="rc__footer">
           {!isAvailable ? (
-            <span className="rcard__status rcard__status--sold">
-              <AlertTriangle size={13} /> Sold Out for Selected Dates
+            <span className="rc__status rc__status--sold">
+              <AlertTriangle size={13} /> Sold Out
             </span>
           ) : overCap ? (
-            <span className="rcard__status rcard__status--cap">
-              <AlertTriangle size={13} /> Room Too Small for Party
+            <span className="rc__status rc__status--cap">
+              <AlertTriangle size={13} /> Too Small for Party
             </span>
           ) : (
-            <span className="rcard__status rcard__status--ok">
-              ✓ Available for Booking
-            </span>
+            <span className="rc__status rc__status--ok">✓ Available</span>
           )}
 
           <button
             type="button"
-            className={`btn-sel ${isSelected ? 'btn-sel--chosen' : 'btn-sel--idle'}`}
+            className={`btn-pick ${isSelected ? 'btn-pick--done' : 'btn-pick--idle'}`}
             disabled={!selectable}
             onClick={e => { e.stopPropagation(); if (selectable) onSelect(room.code); }}
           >

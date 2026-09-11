@@ -20,9 +20,9 @@ const tomorrowStr = () => {
 };
 
 export default function App() {
-  const [checkIn, setCheckIn]   = useState(todayStr());
+  const [checkIn,  setCheckIn]  = useState(todayStr());
   const [checkOut, setCheckOut] = useState(tomorrowStr());
-  const [guests, setGuests]     = useState(2);
+  const [guests,   setGuests]   = useState(2);
   const [selectedCode, setSelectedCode] = useState<string | null>('R101');
 
   const validation   = validateBookingDates(checkIn, checkOut);
@@ -50,16 +50,16 @@ export default function App() {
         minDate={todayStr()}
       />
 
-      <main className="page-body">
-        <div className="layout">
-          {/* ── Rooms ── */}
-          <section>
-            <div className="sect-hd">
-              <h2 className="sect-title">Available Accommodations</h2>
-              <span className="sect-meta">{SAMPLE_ROOMS.length} Room Types · Bengaluru</span>
+      <main className="body-wrap">
+        <div className="two-col">
+          {/* ── Rooms column ── */}
+          <section aria-label="Room listings">
+            <div className="col-head">
+              <h2 className="col-title">Available Accommodations</h2>
+              <span className="col-meta">{SAMPLE_ROOMS.length} Room Types · Bengaluru</span>
             </div>
 
-            <div className="rooms">
+            <div className="room-list">
               {SAMPLE_ROOMS.map(room => (
                 <RoomCard
                   key={room.code}
@@ -72,24 +72,24 @@ export default function App() {
               ))}
             </div>
 
+            {/* Availability notice */}
             <div className="avail-note">
               <div className="avail-note__head">
-                <Info size={14} />
-                Real-time Availability
+                <Info size={13} /> Real-time Availability Check
               </div>
               <p className="avail-note__body">
-                Availability is checked against existing reservations in real time.
-                Currently <strong>R101</strong> is held from days +2 to +5, and{' '}
+                Availability is verified against live reservations. Currently{' '}
+                <strong>R101</strong> is held from days +2 to +5, and{' '}
                 <strong>R201</strong> from days +7 to +10 from today.
-                Choosing overlapping dates will mark those rooms as sold out.
+                Selecting overlapping dates will mark those rooms as sold out.
               </p>
             </div>
           </section>
 
-          {/* ── Folio ── */}
-          <section>
-            <div className="sect-hd">
-              <h2 className="sect-title">Reservation Folio</h2>
+          {/* ── Folio column ── */}
+          <section aria-label="Reservation folio">
+            <div className="col-head">
+              <h2 className="col-title">Reservation Folio</h2>
             </div>
             <BookingSummary
               selectedRoom={selectedRoom}
