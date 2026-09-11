@@ -1280,6 +1280,17 @@ input[type="date"].sw-inp::-webkit-calendar-picker-indicator:hover { opacity: 1;
   .showcase-trust { grid-template-columns: 1fr 1fr; }
 }
 
+@media (max-width: 960px) {
+  .details-grid {
+    grid-template-columns: 1fr !important;
+    gap: 24px;
+    width: 100%;
+  }
+  .details-summary-col, .details-form-col {
+    width: 100%;
+  }
+}
+
 @media (max-width: 768px) {
   .nav-links { display: none; }
   .nav-hamburger { display: flex; }
@@ -1340,13 +1351,40 @@ input[type="date"].sw-inp::-webkit-calendar-picker-indicator:hover { opacity: 1;
   .sw-search-btn { width: 100%; justify-content: center; }
   .sw-popover { width: 100%; }
   
-  .details-top-bar {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 8px;
+  .details-page {
+    width: 100%;
+    padding-bottom: 40px;
+  }
+  .details-grid {
+    grid-template-columns: 1fr !important;
+    gap: 20px;
+    width: 100%;
+  }
+  .details-summary-col, .details-form-col {
+    width: 100%;
   }
   .summary-card, .guest-form-card {
-    padding: 18px 16px;
+    padding: 20px 16px;
+    border-radius: 14px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  .details-top-bar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+    margin-bottom: 20px;
+    padding-bottom: 14px;
+  }
+  .details-back-btn {
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+  }
+  .details-step-indicator {
+    width: 100%;
+    text-align: center;
+    font-size: .74rem;
   }
   
   .rcard { grid-template-columns: 1fr; }
